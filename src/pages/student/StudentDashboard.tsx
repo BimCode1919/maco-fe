@@ -55,7 +55,7 @@ export const StudentDashboard = ({ onLogout }: StudentDashboardProps) => {
   const myCourses = [
     { id: 1, title: "Lập trình Python cho AI", progress: 65, lastAccessed: "2 giờ trước", lessons: "12/24", image: "https://csc.edu.vn/data/images/tin-tuc/lap-trinh-csdl/kien-thuc-lap-trinh/lap-trinh-python-cho-nguoi-moi-bat-dau/lap-trinh-python-cho-nguoi-moi-bat-dau_png.png" },
     { id: 2, title: "UI/UX Design cho Mobile App", progress: 30, lastAccessed: "Hôm qua", lessons: "8/32", image: "https://amela.vn/wp-content/uploads/2023/07/1.-Thiet-ke-UX_UI-la-gi_-.jpg" },
-    { id: 3, title: "Data Science cơ bản", progress: 100, lastAccessed: "3 ngày trước", lessons: "40/40", image: "https://cafebiz.cafebizcdn.vn/162124557946388480/2020/12/10/data-science-16075678125471922501066.jpg" }
+    { id: 3, title: "Data Science cơ bản", progress: 100, lastAccessed: "3 ngày trước", lessons: "40/40", image: "https://static.topcv.vn/cms/data-scientist-la-gi-topcv-3641bc0a16ef76.jpg" }
   ];
 
   const renderContent = () => {
