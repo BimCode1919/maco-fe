@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react"; // Thêm useEffect
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard, Users, BookOpen, DollarSign,
   ShieldCheck, BarChart3, Settings, AlertCircle
 } from "lucide-react";
 
-// Import các component con hiện có
+// ... các import component khác giữ nguyên ...
 import { Sidebar } from "./components/Sidebar";
 import { TopBar } from "./components/TopBar";
 import { StatsGrid } from "./components/StatsGrid";
@@ -14,8 +14,6 @@ import { CourseApprovals } from "./components/CourseApprovals";
 import { UserManagement } from "./components/UserManagement";
 import { CourseManagement } from "./components/CourseManagement";
 import { FinanceManagement } from "./components/FinanceManagement";
-
-// --- IMPORT 3 COMPONENT MỚI ---
 import { SystemReports } from "./components/SystemReports";
 import { SecurityPermissions } from "./components/SecurityPermissions";
 import { SystemSettings } from "./components/SystemSettings";
@@ -25,9 +23,25 @@ interface AdminDashboardProps {
 }
 
 export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  // 1. SỬA TẠI ĐÂY: Khởi tạo trạng thái dựa trên kích thước màn hình
+  // Desktop (> 1024px) thì mở, Mobile thì đóng
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 1024);
   const [activeTab, setActiveTab] = useState("dashboard");
   const [isDarkMode, setIsDarkMode] = useState(true);
+
+  // 2. THÊM useEffect: Để tự động đóng/mở khi người dùng resize trình duyệt
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 1024) {
+        setIsSidebarOpen(true);
+      } else {
+        setIsSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const theme = {
     bg: isDarkMode ? "bg-slate-950" : "bg-slate-50",
@@ -55,17 +69,18 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
   const stats = [
     { label: "Tổng Người dùng", value: "12,450", icon: Users, color: "bg-blue-600", trend: "+12%" },
     { label: "Khóa học Active", value: "458", icon: BookOpen, color: "bg-indigo-600", trend: "+5%" },
-    { label: "Doanh thu (Tháng)", value: "1.240.000.000 ₫", icon: DollarSign, color: "bg-emerald-600", trend: "+18%" },
+    { label: "Doanh thu (Tháng)", value: "1.24B vnd", icon: DollarSign, color: "bg-emerald-600", trend: "+18%" },
     { label: "Lỗi hệ thống", value: "0", icon: AlertCircle, color: "bg-rose-600", trend: "0" },
   ];
 
-  // Danh sách các tab đã có component để tránh render trang fallback
   const developedTabs = ["dashboard", "users", "courses", "finances", "reports", "security", "settings"];
 
   return (
     <div className={`min-h-screen flex overflow-hidden transition-colors duration-300 ${theme.bg}`}>
+      {/* 3. ĐẢM BẢO SIDEBAR NHẬN ĐỦ PROPS */}
       <Sidebar
         isOpen={isSidebarOpen}
+        setIsOpen={setIsSidebarOpen} 
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         menuItems={menuItems}
@@ -85,8 +100,7 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
 
         <div className="p-8 max-w-7xl mx-auto">
           <AnimatePresence mode="wait">
-
-            {/* 1. TỔNG QUAN */}
+            {/* ... các phần render Tab giữ nguyên ... */}
             {activeTab === "dashboard" && (
               <motion.div key="dashboard" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
                 <div className="mb-10">
@@ -101,28 +115,24 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
               </motion.div>
             )}
 
-            {/* 2. NGƯỜI DÙNG */}
             {activeTab === "users" && (
               <motion.div key="users" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                 <UserManagement isDarkMode={isDarkMode} theme={theme} />
               </motion.div>
             )}
 
-            {/* 3. KHÓA HỌC */}
             {activeTab === "courses" && (
               <motion.div key="courses" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                 <CourseManagement isDarkMode={isDarkMode} theme={theme} />
               </motion.div>
             )}
 
-            {/* 4. TÀI CHÍNH */}
             {activeTab === "finances" && (
               <motion.div key="finances" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                 <FinanceManagement isDarkMode={isDarkMode} theme={theme} />
               </motion.div>
             )}
 
-            {/* 5. BÁO CÁO HỆ THỐNG */}
             {activeTab === "reports" && (
               <motion.div key="reports" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                 <div className="mb-10">
@@ -133,7 +143,6 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
               </motion.div>
             )}
 
-            {/* 6. BẢO MẬT & QUYỀN */}
             {activeTab === "security" && (
               <motion.div key="security" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                 <div className="mb-10">
@@ -144,7 +153,6 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
               </motion.div>
             )}
 
-            {/* 7. CẤU HÌNH HỆ THỐNG */}
             {activeTab === "settings" && (
               <motion.div key="settings" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                 <div className="mb-10">
@@ -155,7 +163,6 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
               </motion.div>
             )}
 
-            {/* FALLBACK CHO CÁC TAB CHƯA ĐỊNH NGHĨA */}
             {!developedTabs.includes(activeTab) && (
               <motion.div key="fallback" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center py-40">
                 <div className={`p-8 rounded-[40px] ${isDarkMode ? 'bg-slate-900' : 'bg-slate-100'} mb-6`}>
@@ -164,7 +171,6 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
                 <h2 className={`text-2xl font-black ${theme.text}`}>Đang phát triển</h2>
               </motion.div>
             )}
-
           </AnimatePresence>
         </div>
       </main>
