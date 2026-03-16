@@ -15,65 +15,75 @@ interface RecentUsersTableProps {
   users: User[];
 }
 
-export const RecentUsersTable = ({ isDarkMode, theme, users }: RecentUsersTableProps) => {
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h3 className={`text-xl font-black ${theme.text}`}>Người dùng mới gia nhập</h3>
-        <button className={`font-bold text-sm hover:underline ${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'}`}>Quản lý tất cả</button>
-      </div>
+const getRoleStyle = (role: string) => {
+  switch (role) {
+    case 'Giảng viên':
+      return 'bg-violet-500/10 text-violet-400 border border-violet-500/20';
+    case 'Học viên':
+      return 'bg-blue-500/10 text-blue-400 border border-blue-500/20';
+    default:
+      return 'bg-slate-500/10 text-slate-400';
+  }
+};
 
-      <div className={`rounded-[32px] border overflow-hidden transition-colors duration-300 ${theme.card}`}>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className={`border-b ${theme.tableHeader}`}>
-                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest">Người dùng</th>
-                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest">Vai trò</th>
-                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest">Trạng thái</th>
-                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest">Thời gian</th>
-                <th className="px-6 py-4"></th>
+export const RecentUsersTable = ({ theme, users }: RecentUsersTableProps) => (
+  <div className="space-y-6">
+    <div className="flex items-center justify-between px-2">
+      <h3 className={`text-lg md:text-2xl font-black ${theme.text}`}>Người dùng mới gia nhập</h3>
+      <button className="text-xs md:text-base font-bold text-indigo-500 hover:underline">Quản lý tất cả</button>
+    </div>
+
+    <div className={`rounded-[32px] border shadow-sm ${theme.card} overflow-hidden`}>
+      <div className="overflow-x-auto no-scrollbar">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className={`border-b ${theme.tableHeader}`}>
+              {/* Tăng padding trên desktop (md:px-8 py-6) */}
+              <th className="px-4 md:px-8 py-4 md:py-6 text-[10px] md:text-xs font-black uppercase tracking-widest">Người dùng</th>
+              <th className="px-4 py-4 md:py-6 text-[10px] md:text-xs font-black uppercase tracking-widest text-center">Vai trò</th>
+              <th className="px-4 py-4 md:py-6 text-[10px] md:text-xs font-black uppercase tracking-widest text-center">Trạng thái</th>
+              <th className="px-4 py-4 md:py-6 text-[10px] md:text-xs font-black uppercase tracking-widest text-right">Thời gian</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-800/50">
+            {users.map((user) => (
+              <tr key={user.id} className={`${theme.tableRow} transition-all`}>
+                <td className="px-4 md:px-8 py-4 md:py-6">
+                  <div className="flex items-center gap-3 md:gap-5">
+                    <div className="w-8 h-8 md:w-12 md:h-12 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center text-xs md:text-lg font-bold">
+                      {user.name.charAt(0)}
+                    </div>
+                    <div className="min-w-0">
+                      <p className={`text-sm md:text-base font-bold truncate ${theme.text}`}>{user.name}</p>
+                      <p className={`text-[10px] md:text-xs ${theme.textMuted} truncate`}>{user.email}</p>
+                    </div>
+                  </div>
+                </td>
+                <td className="px-2 md:px-4 py-4 text-center">
+                  <span className={`
+    inline-flex items-center justify-center
+    text-[9px] md:text-xs font-black uppercase tracking-tighter md:tracking-widest 
+    px-2 py-1 md:px-3 md:py-1.5 rounded-lg 
+    whitespace-nowrap 
+    ${getRoleStyle(user.role)}
+  `}>
+                    {user.role}
+                  </span>
+                </td>
+                <td className="px-4 py-4 text-center">
+                  <div className="flex items-center justify-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${user.status === 'Active' ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+                    <span className={`text-xs md:text-sm font-medium ${theme.text}`}>{user.status}</span>
+                  </div>
+                </td>
+                <td className={`px-4 md:px-8 py-4 text-right text-xs md:text-sm font-medium ${theme.textMuted}`}>
+                  {user.joined}
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {users.map((user) => (
-                <tr key={user.id} className={`border-b transition-colors duration-300 ${theme.tableRow}`}>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${isDarkMode ? 'bg-slate-800 text-indigo-400' : 'bg-slate-100 text-indigo-600'}`}>
-                        {user.name.charAt(0)}
-                      </div>
-                      <div>
-                        <p className={`text-sm font-bold ${theme.text}`}>{user.name}</p>
-                        <p className={`text-[10px] ${theme.textMuted}`}>{user.email}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className={`text-[10px] font-bold px-2 py-1 rounded-md ${
-                      user.role === 'Giảng viên' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-blue-500/10 text-blue-400'
-                    }`}>
-                      {user.role}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-1.5">
-                      <div className={`w-1.5 h-1.5 rounded-full ${user.status === 'Active' ? 'bg-emerald-500' : 'bg-amber-500'}`}></div>
-                      <span className={`text-xs font-medium ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>{user.status}</span>
-                    </div>
-                  </td>
-                  <td className={`px-6 py-4 text-xs font-medium ${theme.textMuted}`}>{user.joined}</td>
-                  <td className="px-6 py-4 text-right">
-                    <button className={`p-2 transition-colors ${isDarkMode ? 'text-slate-500 hover:text-white' : 'text-slate-400 hover:text-slate-900'}`}>
-                      <MoreVertical size={16} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
-  );
-};
+  </div>
+);

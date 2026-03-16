@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
-import { 
-  BookOpen, Star, Users, CheckCircle, 
-  XCircle, Clock, TrendingUp, MoreVertical, Search, Plus 
+import {
+  BookOpen, Star, Users, CheckCircle,
+  XCircle, Clock, TrendingUp, MoreVertical, Search, Plus
 } from "lucide-react";
-import { 
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, 
-  Tooltip, ResponsiveContainer 
+import {
+  AreaChart, Area, XAxis, YAxis, CartesianGrid,
+  Tooltip, ResponsiveContainer
 } from "recharts";
 
 interface CourseManagementProps {
@@ -46,14 +46,14 @@ export const CourseManagement = ({ isDarkMode, theme }: CourseManagementProps) =
             <AreaChart data={growthData}>
               <defs>
                 <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3}/>
-                  <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                  <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDarkMode ? "#1e293b" : "#f1f5f9"} />
-              <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} />
+              <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12 }} />
               <YAxis hide />
-              <Tooltip 
+              <Tooltip
                 contentStyle={{ borderRadius: '16px', border: 'none', backgroundColor: isDarkMode ? '#1e293b' : '#fff', color: isDarkMode ? '#fff' : '#000' }}
               />
               <Area type="monotone" dataKey="sales" stroke="#6366f1" strokeWidth={3} fillOpacity={1} fill="url(#colorSales)" />
@@ -93,22 +93,22 @@ export const CourseManagement = ({ isDarkMode, theme }: CourseManagementProps) =
         <div className="p-8 border-b flex flex-col md:flex-row md:items-center justify-between gap-6">
           <h3 className={`text-xl font-black ${theme.text}`}>Quản lý phê duyệt khóa học</h3>
           <div className="flex gap-3">
-             <div className="relative">
-                <Search className={`absolute left-3 top-1/2 -translate-y-1/2 ${theme.textMuted}`} size={16} />
-                <input placeholder="Tìm khóa học..." className={`pl-10 pr-4 py-2 rounded-xl text-sm border outline-none ${theme.input} ${theme.text}`} />
-             </div>
-             <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl font-bold text-xs">
-                <Plus size={16} /> Thêm khóa học
-             </button>
+            <div className="relative">
+              <Search className={`absolute left-3 top-1/2 -translate-y-1/2 ${theme.textMuted}`} size={16} />
+              <input placeholder="Tìm khóa học..." className={`pl-10 pr-4 py-2 rounded-xl text-sm border outline-none ${theme.input} ${theme.text}`} />
+            </div>
+            <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl font-bold text-xs">
+              <Plus size={16} /> Thêm khóa học
+            </button>
           </div>
         </div>
         <div className="overflow-x-auto no-scrollbar">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left border-collapse min-w-[700px]">
             <thead>
               <tr className={`border-b ${theme.tableHeader}`}>
-                <th className="px-8 py-5 text-[10px] font-black uppercase">Khóa học</th>
-                <th className="px-8 py-5 text-[10px] font-black uppercase">Giảng viên</th>
-                <th className="px-8 py-5 text-[10px] font-black uppercase">Trạng thái</th>
+                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest">Khóa học</th>
+                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest whitespace-nowrap">Giảng viên</th>
+                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-center">Trạng thái</th>
                 <th className="px-8 py-5"></th>
               </tr>
             </thead>
@@ -135,23 +135,32 @@ const TopCourseRow = ({ title, instructor, metric, theme, color, isDarkMode }: a
 );
 
 const CourseRow = ({ title, instructor, status, theme }: any) => (
-  <tr className={`border-b ${theme.tableRow} transition-all`}>
+  <tr className={`border-b ${theme.tableRow} transition-all hover:bg-slate-500/5`}>
     <td className="px-8 py-5">
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center text-[10px] font-bold text-indigo-500">IMG</div>
-        <p className={`text-sm font-bold ${theme.text}`}>{title}</p>
+        <div className="w-10 h-10 flex-shrink-0 rounded-lg bg-indigo-500/10 flex items-center justify-center text-[10px] font-black text-indigo-500 border border-indigo-500/10">
+          IMG
+        </div>
+        <p className={`text-sm font-bold truncate max-w-[200px] ${theme.text}`}>{title}</p>
       </div>
     </td>
-    <td className={`px-8 py-5 text-xs font-medium ${theme.textMuted}`}>{instructor}</td>
+    <td className={`px-8 py-5 text-xs font-bold ${theme.textMuted} whitespace-nowrap`}>
+      {instructor}
+    </td>
     <td className="px-8 py-5">
-      <span className={`text-[10px] font-black px-3 py-1 rounded-full uppercase ${
-        status === 'Chờ duyệt' ? 'bg-amber-500/10 text-amber-500' :
-        status === 'Đã duyệt' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500'
-      }`}>
+      {/* whitespace-nowrap là chìa khóa để không bị vỡ chữ */}
+      <span className={`inline-flex items-center justify-center whitespace-nowrap text-[9px] md:text-[10px] font-black px-3 py-1.5 rounded-lg uppercase tracking-wider border ${status === 'Chờ duyệt' ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' :
+        status === 'Đã duyệt' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' :
+          'bg-rose-500/10 text-rose-500 border-rose-500/20'
+        }`}>
         {status}
       </span>
     </td>
-    <td className="px-8 py-5 text-right"><MoreVertical size={16} className={theme.textMuted} /></td>
+    <td className="px-8 py-5 text-right">
+      <button className={`p-2 rounded-lg hover:bg-slate-500/10 transition-colors`}>
+        <MoreVertical size={16} className={theme.textMuted} />
+      </button>
+    </td>
   </tr>
 );
 

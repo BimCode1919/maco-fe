@@ -78,28 +78,32 @@ export const UserManagement = ({ isDarkMode, theme }: UserManagementProps) => {
                         </div>
                     </div>
 
-                    <div className="h-[350px] w-full flex flex-col md:flex-row items-center">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <PieChart>
-                                <Pie
-                                    data={[...studentStatusData, ...instructorStatusData]}
-                                    innerRadius={80}
-                                    outerRadius={110}
-                                    paddingAngle={8}
-                                    dataKey="value"
-                                >
-                                    {[...studentStatusData, ...instructorStatusData].map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={entry.color} stroke="none" />
-                                    ))}
-                                </Pie>
-                                <Tooltip
-                                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
-                                />
-                            </PieChart>
-                        </ResponsiveContainer>
+                    <div className="h-[auto] md:h-[350px] w-full flex flex-col md:flex-row items-center gap-8">
+                        <div className="h-[250px] md:h-full w-full">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <PieChart>
+                                    <Pie
+                                        data={[...studentStatusData, ...instructorStatusData]}
+                                        innerRadius={60} // Giảm một chút cho mobile
+                                        outerRadius={80}
+                                        paddingAngle={8}
+                                        dataKey="value"
+                                    >
+                                        {[...studentStatusData, ...instructorStatusData].map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={entry.color} stroke="none" />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip
+                                        contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
+                                    />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        </div>
 
-                        <div className="w-full md:w-80 space-y-4">
-                            <h4 className={`text-sm font-black uppercase tracking-widest ${theme.text}`}>Chi tiết tỷ lệ</h4>
+                        <div className="w-full md:w-80 grid grid-cols-2 md:grid-cols-1 gap-x-4 gap-y-2 md:space-y-4">
+                            <h4 className={`col-span-2 md:col-span-1 text-[10px] md:text-sm font-black uppercase tracking-widest ${theme.text} mb-2`}>
+                                Chi tiết tỷ lệ
+                            </h4>
                             {[...studentStatusData, ...instructorStatusData].map((item, idx) => (
                                 <div key={idx} className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
@@ -175,11 +179,17 @@ export const UserManagement = ({ isDarkMode, theme }: UserManagementProps) => {
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className={`border-b ${theme.tableHeader}`}>
-                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em]">Người dùng</th>
-                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em]">Vai trò</th>
-                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em]">Trạng thái</th>
-                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em]">Khóa học</th>
-                                <th className="px-8 py-5"></th>
+                                {/* Mobile: Giảm padding, Desktop: Giữ nguyên */}
+                                <th className="px-4 md:px-8 py-5 text-[9px] md:text-[10px] font-black uppercase tracking-[0.1em]">Người dùng</th>
+                                <th className="px-4 py-5 text-[9px] md:text-[10px] font-black uppercase tracking-[0.1em] text-center">Vai trò</th>
+
+                                {/* Ẩn trên mobile cực nhỏ, hiện từ màn hình sm (640px) trở lên */}
+                                <th className="hidden sm:table-cell px-6 md:px-8 py-5 text-[9px] md:text-[10px] font-black uppercase tracking-[0.1em]">Trạng thái</th>
+
+                                {/* Chỉ hiện trên màn hình lớn (lg - 1024px) */}
+                                <th className="hidden lg:table-cell px-8 py-5 text-[9px] md:text-[10px] font-black uppercase tracking-[0.1em]">Khóa học</th>
+
+                                <th className="px-4 py-5"></th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-800/10">
@@ -219,34 +229,46 @@ const UserRow = ({ name, email, role, status, courses, theme, isDarkMode }: any)
 
     return (
         <tr className={`transition-all ${theme.tableRow}`}>
-            <td className="px-8 py-5">
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-violet-500/20 flex items-center justify-center font-black text-indigo-500 border border-indigo-500/10">
+            {/* Cột NGƯỜI DÙNG: Quan trọng nhất */}
+            <td className="px-4 md:px-8 py-4 md:py-5">
+                <div className="flex items-center gap-3 md:gap-4">
+                    {/* Avatar: Nhỏ trên mobile (w-9), To trên desktop (w-12) */}
+                    <div className="w-9 h-9 md:w-12 md:h-12 flex-shrink-0 rounded-xl bg-gradient-to-br from-indigo-500/20 to-violet-500/20 flex items-center justify-center font-black text-xs md:text-base text-indigo-500 border border-indigo-500/10">
                         {name.split(' ').pop().charAt(0)}
                     </div>
-                    <div>
-                        <p className={`text-sm font-black ${theme.text}`}>{name}</p>
-                        <p className={`text-[11px] font-medium ${theme.textMuted}`}>{email}</p>
+                    {/* Text: Dùng truncate để không bị vỡ layout khi tên quá dài */}
+                    <div className="min-w-0">
+                        <p className={`text-xs md:text-sm font-black truncate max-w-[100px] md:max-w-none ${theme.text}`}>{name}</p>
+                        <p className={`text-[10px] md:text-[11px] font-medium truncate max-w-[100px] md:max-w-none ${theme.textMuted}`}>{email}</p>
                     </div>
                 </div>
             </td>
-            <td className="px-8 py-5">
-                <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest ${role === 'Giảng viên' ? 'bg-violet-500/10 text-violet-500' : 'bg-blue-500/10 text-blue-500'}`}>
-                    {role}
+
+            {/* Cột VAI TRÒ: Thu nhỏ Badge */}
+            <td className="px-4 py-4 md:py-5 text-center">
+                <div className={`inline-flex items-center px-2 py-0.5 md:px-3 md:py-1 rounded-lg text-[8px] md:text-[10px] font-black uppercase tracking-widest ${role === 'Giảng viên' ? 'bg-violet-500/10 text-violet-500' : 'bg-blue-500/10 text-blue-500'}`}>
+                    {role === 'Giảng viên' ? 'GV' : 'HV'} {/* Rút gọn chữ trên mobile nếu cần */}
+                    <span className="hidden md:inline ml-0.5">{role.split(' ')[1]}</span>
                 </div>
             </td>
-            <td className="px-8 py-5">
-                <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-black uppercase ${getStatusStyle(status)}`}>
+
+            {/* Cột TRẠNG THÁI: Ẩn trên mobile nhỏ */}
+            <td className="hidden sm:table-cell px-6 md:px-8 py-4 md:py-5">
+                <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-black uppercase ${getStatusStyle(status)}`}>
                     <div className={`w-1 h-1 rounded-full ${status === 'Hoạt động' || status === 'Đang học' ? 'bg-emerald-500' : 'bg-rose-500'}`} />
                     {status}
                 </div>
             </td>
-            <td className="px-8 py-5">
+
+            {/* Cột KHÓA HỌC: Chỉ hiện trên Desktop */}
+            <td className="hidden lg:table-cell px-8 py-4 md:py-5">
                 <p className={`text-sm font-black ${theme.text}`}>{courses} <span className="text-[10px] font-medium opacity-50 ml-1">K.Học</span></p>
             </td>
-            <td className="px-8 py-5 text-right">
-                <div className="flex justify-end gap-2">
-                    <button className={`p-2 rounded-lg hover:bg-slate-500/10 ${theme.textMuted} transition-all`}>
+
+            {/* Cột ACTION: Giảm bớt nút trên mobile */}
+            <td className="px-4 md:px-8 py-4 md:py-5 text-right">
+                <div className="flex justify-end gap-1 md:gap-2">
+                    <button className={`hidden md:block p-2 rounded-lg hover:bg-slate-500/10 ${theme.textMuted} transition-all`}>
                         <Mail size={16} />
                     </button>
                     <button className={`p-2 rounded-lg hover:bg-slate-500/10 ${theme.textMuted} transition-all`}>
@@ -262,21 +284,22 @@ const UserRow = ({ name, email, role, status, courses, theme, isDarkMode }: any)
 const StatCard = ({ icon: Icon, title, value, sub, color, theme }: any) => (
     <motion.div
         whileHover={{ y: -5 }}
-        className={`p-6 rounded-[32px] border shadow-sm transition-all ${theme.card}`}
+        className={`p-4 md:p-6 rounded-[24px] md:rounded-[32px] border shadow-sm transition-all ${theme.card}`}
     >
-        <div className="flex items-center justify-between mb-4">
-            <div className={`w-12 h-12 rounded-2xl ${color} flex items-center justify-center text-white shadow-lg`}>
-                <Icon size={24} />
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-2">
+            <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl ${color} flex items-center justify-center text-white shadow-lg`}>
+                <Icon size={20} className="md:w-6 md:h-6" />
             </div>
-            <div className="text-right">
-                <p className={`text-[10px] font-black uppercase tracking-widest ${theme.textMuted}`}>{title}</p>
-                <p className={`text-2xl font-black ${theme.text} mt-1`}>{value}</p>
+            <div className="text-left md:text-right">
+                <p className={`text-[8px] md:text-[10px] font-black uppercase tracking-widest ${theme.textMuted}`}>{title}</p>
+                <p className={`text-lg md:text-2xl font-black ${theme.text}`}>{value}</p>
             </div>
         </div>
-        <div className={`h-1 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden`}>
+        {/* Ẩn thanh progress trên mobile cực nhỏ để tránh rối mắt */}
+        <div className={`hidden md:block h-1 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden`}>
             <div className={`h-full ${color} w-2/3 opacity-50`} />
         </div>
-        <p className={`text-[10px] font-bold ${theme.textMuted} mt-3 flex items-center gap-1`}>
+        <p className={`text-[9px] md:text-[10px] font-bold ${theme.textMuted} mt-1 md:mt-3 line-clamp-1`}>
             {sub}
         </p>
     </motion.div>

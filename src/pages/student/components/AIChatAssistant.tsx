@@ -1,161 +1,92 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
+import { Send, X, Bot, Sparkles, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, ChevronDown, Send } from "lucide-react";
-
-interface Message {
-    id: number;
-    text: string;
-    sender: "ai" | "user";
-}
 
 interface AIChatAssistantProps {
+    lessonTitle: string;
     isOpen: boolean;
-    setIsOpen: (open: boolean) => void;
-    lessonTitle?: string;
+    onClose: () => void;
 }
 
-export const AIChatAssistant = ({ isOpen, setIsOpen, lessonTitle }: AIChatAssistantProps) => {
-    const [messages, setMessages] = useState<Message[]>([
+export const AIChatAssistant = ({ lessonTitle, isOpen, onClose }: AIChatAssistantProps) => {
+    // Dữ liệu hội thoại mẫu để hiển thị ngay khi mở
+    const [messages] = useState([
         {
-            id: 1,
-            text: `Chào bạn! Mình là trợ lý Maco. Mình đã sẵn sàng hỗ trợ bạn cho bài học "${lessonTitle || "này"}". Bạn cần hỏi gì không?`,
-            sender: "ai",
+            role: "ai",
+            content: `Chào bạn! Tôi là AI Contextual Retrieval. Bạn có thắc mắc gì về bài học **"${lessonTitle}"** không?`
         },
-    ]);
-    const [inputValue, setInputValue] = useState("");
-    const [isTyping, setIsTyping] = useState(false);
-    const scrollRef = useRef<HTMLDivElement>(null);
-
-    // Cuộn xuống khi có tin nhắn mới
-    useEffect(() => {
-        if (scrollRef.current) {
-            scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+        {
+            role: "user",
+            content: "Bạn có thể giúp gì hay làm được gì cho mình thế?"
+        },
+        {
+            role: "ai",
+            content: "Tôi có thể giải đáp mọi thắc mắc của bạn về nội dung bài học, tóm tắt ý chính, giải thích các đoạn mã nguồn phức tạp hoặc gợi ý lộ trình thực hành tiếp theo dựa trên kiến thức bạn vừa xem đấy!"
         }
-    }, [messages, isTyping]);
+    ]);
 
-    const handleSendMessage = () => {
-        if (!inputValue.trim()) return;
-
-        // Tin nhắn người dùng
-        const userMsg: Message = {
-            id: Date.now(),
-            text: inputValue,
-            sender: "user",
-        };
-
-        setMessages((prev) => [...prev, userMsg]);
-        setInputValue("");
-        setIsTyping(true);
-
-        // Phản hồi hài hước sau 800ms
-        setTimeout(() => {
-            setIsTyping(false);
-            const aiMsg: Message = {
-                id: Date.now() + 1,
-                text: "Maco đang phát triển tính năng này hẹ hẹ hẹ 🤡",
-                sender: "ai",
-            };
-            setMessages((prev) => [...prev, aiMsg]);
-        }, 800);
-    };
+    if (!isOpen) return null;
 
     return (
-        <div className="fixed bottom-8 right-8 z-50 flex flex-col items-end">
-            <AnimatePresence>
-                {isOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        className="w-[350px] sm:w-[400px] h-[550px] bg-white rounded-32 shadow-2xl border border-slate-100 flex flex-col mb-4 overflow-hidden"
-                    >
-                        {/* Header AI - Giữ nguyên thiết kế cũ */}
-                        <div className="p-5 bg-indigo-600 text-white flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                                    <Sparkles size={20} />
-                                </div>
-                                <div>
-                                    <p className="font-black text-sm">Maco AI Assistance</p>
-                                    <p className="text-[10px] text-indigo-100 font-bold uppercase tracking-tighter">Đang sẵn sàng hỗ trợ</p>
-                                </div>
+        <motion.div
+            initial={{ width: 0, opacity: 0 }}
+            animate={{ width: 380, opacity: 1 }}
+            exit={{ width: 0, opacity: 0 }}
+            // THAY ĐỔI Ở ĐÂY: Dùng relative, h-full và border-l
+            className="relative hidden lg:flex flex-col bg-white border-l border-slate-100 h-full shrink-0 z-10 w-[380px]"
+        >
+            {/* Header */}
+            <div className="p-4 border-b border-slate-50 flex items-center justify-between bg-white shrink-0">
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-lg">
+                        <Sparkles size={16} fill="white" />
+                    </div>
+                    <div>
+                        <h4 className="font-black text-slate-900 text-[11px] uppercase tracking-tight">AI Contextual Retrieval</h4>
+                        <div className="flex items-center gap-1">
+                            <span className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <p className="text-[8px] text-slate-400 font-bold uppercase">Online</p>
+                        </div>
+                    </div>
+                </div>
+                <button onClick={onClose} className="p-2 hover:bg-slate-50 rounded-full text-slate-300 transition-colors">
+                    <X size={18} />
+                </button>
+            </div>
+
+            {/* Content Area */}
+            <div className="flex-1 overflow-y-auto bg-slate-50/30 no-scrollbar flex flex-col">
+                <div className="flex-1 min-h-[20px]" />
+
+                <div className="p-4 space-y-4 pt-1"> {/* Giảm pt-4 xuống pt-2 để sát hơn nữa */}
+                    {messages.map((msg, index) => (
+                        <div key={index} className={`flex gap-2.5 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
+                            <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 shadow-sm 
+                    ${msg.role === "ai" ? "bg-white border border-slate-100 text-indigo-600" : "bg-indigo-600 text-white"}`}>
+                                {msg.role === "ai" ? <Bot size={14} /> : <User size={14} />}
                             </div>
-                            <button
-                                onClick={() => setIsOpen(false)}
-                                className="hover:bg-white/10 p-2 rounded-lg transition-colors"
-                            >
-                                <ChevronDown />
-                            </button>
+                            <div className={`p-3 rounded-2xl text-[13px] leading-relaxed shadow-sm max-w-[85%] 
+                    ${msg.role === "ai" ? "bg-white text-slate-600 rounded-tl-none" : "bg-indigo-500 text-white rounded-tr-none"}`}>
+                                <p dangerouslySetInnerHTML={{ __html: msg.content.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>') }} />
+                            </div>
                         </div>
+                    ))}
+                </div>
+            </div>
 
-                        {/* Khu vực tin nhắn */}
-                        <div
-                            ref={scrollRef}
-                            className="flex-1 p-6 overflow-y-auto space-y-4 bg-slate-50/50 text-sm scroll-smooth"
-                        >
-                            {messages.map((msg) => (
-                                <motion.div
-                                    initial={{ opacity: 0, y: 5 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    key={msg.id}
-                                    className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
-                                >
-                                    <div
-                                        className={`max-w-[80%] p-4 rounded-2xl shadow-sm leading-relaxed ${msg.sender === "user"
-                                                ? "bg-indigo-600 text-white rounded-tr-none"
-                                                : "bg-white text-slate-700 rounded-tl-none border border-slate-100 font-medium"
-                                            }`}
-                                    >
-                                        {msg.text}
-                                    </div>
-                                </motion.div>
-                            ))}
-
-                            {/* Hiệu ứng đang gõ nhẹ nhàng */}
-                            {isTyping && (
-                                <div className="flex justify-start">
-                                    <div className="bg-white border border-slate-100 p-3 rounded-2xl rounded-tl-none shadow-sm flex gap-1">
-                                        <span className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce"></span>
-                                        <span className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce [animation-delay:0.2s]"></span>
-                                        <span className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce [animation-delay:0.4s]"></span>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Ô nhập liệu */}
-                        <div className="p-4 bg-white border-t border-slate-100 flex gap-2">
-                            <input
-                                type="text"
-                                value={inputValue}
-                                onChange={(e) => setInputValue(e.target.value)}
-                                onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
-                                placeholder="Hỏi AI về bài học..."
-                                className="flex-1 bg-slate-100 border-none rounded-xl px-4 text-sm font-medium focus:ring-2 focus:ring-indigo-600 transition-all outline-none"
-                            />
-                            <button
-                                onClick={handleSendMessage}
-                                className="bg-indigo-600 text-white p-3 rounded-xl hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all active:scale-90"
-                            >
-                                <Send size={18} />
-                            </button>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
-            {/* Nút bật/tắt Chat */}
-            <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="bg-indigo-600 text-white p-5 rounded-full shadow-2xl shadow-indigo-300 hover:scale-110 active:scale-95 transition-all flex items-center gap-3 group"
-            >
-                {!isOpen && (
-                    <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 font-black text-sm whitespace-nowrap">
-                        Hỏi AI bài học này
-                    </span>
-                )}
-                <Sparkles size={24} />
-            </button>
-        </div>
+            {/* Input Area */}
+            <div className="p-4 bg-white border-t border-slate-50 shrink-0">
+                <div className="flex items-center gap-2 bg-slate-100 rounded-2xl p-1 pr-1.5 transition-all focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-100 border border-transparent focus-within:border-indigo-100">
+                    <input
+                        type="text"
+                        placeholder="Hỏi về bài học..."
+                        className="flex-1 bg-transparent border-none py-2 px-3 text-[13px] font-bold text-slate-700 outline-none"
+                    />
+                    <button className="w-8 h-8 bg-indigo-600 text-white rounded-xl flex items-center justify-center shadow-md active:scale-95 transition-all">
+                        <Send size={14} />
+                    </button>
+                </div>
+            </div>
+        </motion.div>
     );
 };

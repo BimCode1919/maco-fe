@@ -9,6 +9,7 @@ import { CreateCourse } from "./components/CreateCourse";
 import { StudentAnalytics } from "./components/StudentAnalytics";
 import { RevenueAnalytics } from "./components/RevenueAnalytics";
 import { InstructorSettings } from "./components/InstructorSettings";
+import { EditCourseContent } from "./components/EditCourseContent";
 
 interface InstructorDashboardProps {
   onLogout: () => void;
@@ -23,6 +24,7 @@ export const InstructorDashboard = ({ onLogout }: InstructorDashboardProps) => {
 
   const [activeTab, setActiveTab] = useState("dashboard");
   const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   // 3. THÊM: Theo dõi sự thay đổi kích thước màn hình
   useEffect(() => {
@@ -47,10 +49,25 @@ export const InstructorDashboard = ({ onLogout }: InstructorDashboardProps) => {
     switch (activeTab) {
       case "dashboard": return <InstructorOverview />;
       case "courses":
+        if (isEditing) {
+          return (
+            <EditCourseContent
+              courseTitle="Mastering Large Language Models"
+              onBack={() => setIsEditing(false)}
+            />
+          );
+        }
         return selectedCourseId ? (
-          <CourseContent onBack={handleBackToCourses} />
+          <CourseContent onBack={handleBackToCourses} onEdit={() => setIsEditing(true)} />
         ) : (
-          <MyCourses onViewDetails={(id) => setSelectedCourseId(id)} />
+          <MyCourses
+            onViewDetails={(id) => setSelectedCourseId(id)}
+            setActiveTab={setActiveTab}
+            onEditCourse={(id) => {
+              setSelectedCourseId(id);
+              setIsEditing(true);
+            }}
+          />
         );
       case "students": return <StudentAnalytics />;
       case "revenue": return <RevenueAnalytics />;

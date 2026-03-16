@@ -1,10 +1,14 @@
-import { 
-  Search, 
-  Bell, 
-  User, 
-  Menu, 
-  X 
+import { useState, useRef, useEffect } from "react";
+import {
+  Search,
+  Bell,
+  User,
+  Menu,
+  X,
+  CheckCircle2,
+  Clock
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface TopBarProps {
   isSidebarOpen: boolean;
@@ -13,40 +17,97 @@ interface TopBarProps {
 }
 
 export const TopBar = ({ isSidebarOpen, setIsSidebarOpen, activeTabLabel }: TopBarProps) => {
+  const [showNotifications, setShowNotifications] = useState(false);
+  const notificationRef = useRef<HTMLDivElement>(null);
+
+  // Đóng dropdown khi click ra ngoài
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+        setShowNotifications(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const notifications = [
+    { id: 1, title: "Khóa học mới", desc: "AI Gen: Prompt Engineering đã ra mắt!", time: "5 phút trước", icon: CheckCircle2, color: "text-emerald-500" },
+    { id: 2, title: "Nhắc nhở học tập", desc: "Bạn còn bài tập Python chưa hoàn thành.", time: "2 giờ trước", icon: Clock, color: "text-amber-500" },
+  ];
+
   return (
-    <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-100 px-8 py-4 flex items-center justify-between">
-      <div className="flex items-center gap-4">
-        <button 
+    <header className="sticky top-0 z-100 bg-white/80 backdrop-blur-xl border-b border-slate-100 px-6 py-4 flex items-center justify-between">
+
+      {/* Left side */}
+      <div className="flex items-center gap-5">
+        <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="p-3 rounded-xl bg-slate-100 text-slate-600 hover:bg-indigo-600 hover:text-white transition-all"
+          className={`p-2.5 rounded-[14px] transition-all duration-300 ${isSidebarOpen ? "bg-indigo-600 text-white shadow-lg shadow-indigo-200" : "bg-slate-50 text-slate-500 hover:bg-slate-100"
+            }`}
         >
-          {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
+          {isSidebarOpen ? <X size={20} strokeWidth={2.5} /> : <Menu size={20} strokeWidth={2.5} />}
         </button>
-        <h2 className="text-xl font-black text-slate-900 hidden md:block">
-          {activeTabLabel}
-        </h2>
+        <h2 className="text-lg font-black text-slate-900 hidden md:block tracking-tight">{activeTabLabel}</h2>
       </div>
 
-      <div className="flex items-center gap-6">
-        <div className="relative hidden lg:block">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-          <input 
-            type="text" 
-            placeholder="Tìm khóa học..."
-            className="w-64 pl-12 pr-4 py-2.5 bg-slate-100 border-none rounded-xl text-sm font-medium focus:ring-2 focus:ring-indigo-600 outline-none transition-all"
-          />
+      {/* Right side */}
+      <div className="flex items-center gap-4">
+        {/* Notifications with Dropdown */}
+        <div className="relative" ref={notificationRef}>
+          <button
+            onClick={() => setShowNotifications(!showNotifications)}
+            className={`relative p-3 rounded-[16px] transition-all border border-transparent ${showNotifications ? "bg-indigo-50 text-indigo-600 border-indigo-100" : "bg-slate-50 text-slate-500 hover:text-indigo-600"
+              }`}
+          >
+            <motion.div animate={showNotifications ? { rotate: [0, 15, -15, 0] } : {}} transition={{ duration: 0.4 }}>
+              <Bell size={20} strokeWidth={2.5} />
+            </motion.div>
+            <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
+          </button>
+
+          <AnimatePresence>
+            {showNotifications && (
+              <motion.div
+                initial={{ opacity: 0, y: 15, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 15, scale: 0.95 }}
+                className="absolute right-0 mt-3 w-80 bg-white rounded-[24px] shadow-2xl shadow-indigo-200/50 border border-slate-100 overflow-hidden"
+              >
+                <div className="p-5 border-b border-slate-50 flex items-center justify-between">
+                  <span className="font-black text-slate-900">Thông báo</span>
+                  <span className="text-[11px] font-black text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg">2 MỚI</span>
+                </div>
+                <div className="max-h-[300px] overflow-y-auto">
+                  {notifications.map((n) => (
+                    <div key={n.id} className="p-4 hover:bg-slate-50 cursor-pointer transition-colors border-b border-slate-50 last:border-0 flex gap-4">
+                      <div className={`w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center shrink-0 ${n.color}`}>
+                        <n.icon size={18} strokeWidth={2.5} />
+                      </div>
+                      <div>
+                        <p className="text-[13px] font-black text-slate-900 leading-tight mb-1">{n.title}</p>
+                        <p className="text-[11px] font-medium text-slate-500 leading-snug">{n.desc}</p>
+                        <p className="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-tighter">{n.time}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <button className="w-full py-4 text-[12px] font-black text-slate-400 hover:text-indigo-600 hover:bg-slate-50 transition-all uppercase tracking-widest">
+                  Xem tất cả
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-        <button className="relative p-3 rounded-xl bg-slate-100 text-slate-600 hover:text-indigo-600 transition-all">
-          <Bell size={20} />
-          <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-        </button>
-        <div className="flex items-center gap-3 pl-4 border-l border-slate-200">
+
+        {/* Profile Section */}
+        <div className="flex items-center gap-3 pl-3 border-l border-slate-100 ml-2">
           <div className="text-right hidden sm:block">
-            <p className="text-sm font-black text-slate-900">Nguyễn Văn Học</p>
-            <p className="text-xs font-bold text-indigo-600 uppercase tracking-wider">Học viên Pro</p>
+            <p className="text-[13px] font-black text-slate-900 leading-tight">Học viên Maco</p>
+            <p className="text-[10px] font-black text-indigo-600 uppercase tracking-[1px]">ID: 280426</p>
           </div>
-          <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600 font-black">
-            <User size={20} />
+          <div className="w-11 h-11 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-[16px] flex items-center justify-center text-white shadow-lg shadow-indigo-100">
+            <User size={20} strokeWidth={2.5} />
           </div>
         </div>
       </div>

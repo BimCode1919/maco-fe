@@ -11,7 +11,7 @@ export const Footer = () => {
               <Logo isWhite={true} textClassName="text-2xl" className="w-10 h-10" />
             </div>
             <p className="text-slate-400 text-sm leading-relaxed mb-8">
-              Tiên phong trong việc cung cấp các giải pháp AI đột phá phục vụ giảng dạy và học tập.
+              Tập trung ứng dụng AI để giải quyết những rào cản trong việc học trực tuyến, giúp bạn duy trì sự tập trung và xây dựng nền tảng kiến thức vững chắc.
             </p>
             <div className="flex gap-4">
               <a href="#" className="w-10 h-10 rounded-full glass-dark flex items-center justify-center hover:bg-indigo-600 transition-colors">

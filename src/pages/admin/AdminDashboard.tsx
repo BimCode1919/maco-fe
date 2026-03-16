@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react"; // Thêm useEffect
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard, Users, BookOpen, DollarSign,
   ShieldCheck, BarChart3, Settings, AlertCircle
 } from "lucide-react";
 
-// ... các import component khác giữ nguyên ...
+// Import các component từ thư mục con
 import { Sidebar } from "./components/Sidebar";
 import { TopBar } from "./components/TopBar";
 import { StatsGrid } from "./components/StatsGrid";
@@ -23,22 +23,14 @@ interface AdminDashboardProps {
 }
 
 export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
-  // 1. SỬA TẠI ĐÂY: Khởi tạo trạng thái dựa trên kích thước màn hình
-  // Desktop (> 1024px) thì mở, Mobile thì đóng
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 1024);
   const [activeTab, setActiveTab] = useState("dashboard");
   const [isDarkMode, setIsDarkMode] = useState(true);
 
-  // 2. THÊM useEffect: Để tự động đóng/mở khi người dùng resize trình duyệt
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth > 1024) {
-        setIsSidebarOpen(true);
-      } else {
-        setIsSidebarOpen(false);
-      }
+      setIsSidebarOpen(window.innerWidth > 1024);
     };
-
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -67,50 +59,67 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
   ];
 
   const stats = [
-    { label: "Tổng Người dùng", value: "12,450", icon: Users, color: "bg-blue-600", trend: "+12%" },
-    { label: "Khóa học Active", value: "458", icon: BookOpen, color: "bg-indigo-600", trend: "+5%" },
-    { label: "Doanh thu (Tháng)", value: "1.24B vnd", icon: DollarSign, color: "bg-emerald-600", trend: "+18%" },
-    { label: "Lỗi hệ thống", value: "0", icon: AlertCircle, color: "bg-rose-600", trend: "0" },
+    { label: "Tổng Người dùng", value: "3,842", icon: Users, color: "bg-blue-600", trend: "+5.2%" },
+    { label: "Khóa học Active", value: "128", icon: BookOpen, color: "bg-indigo-600", trend: "+2.4%" },
+    { label: "Doanh thu (Tháng)", value: "84,500k", icon: DollarSign, color: "bg-emerald-600", trend: "+10.1%" },
+    { label: "Lỗi hệ thống", value: "2", icon: AlertCircle, color: "bg-rose-600", trend: "-50%" },
   ];
 
-  const developedTabs = ["dashboard", "users", "courses", "finances", "reports", "security", "settings"];
+  const seedUsers = [
+    { id: 1, name: "User_8821", email: "st_8821@edu.vn", role: "Học viên", status: "Active", joined: "5 phút trước" },
+    { id: 2, name: "Instructor_X", email: "inst_x@ai-lab.com", role: "Giảng viên", status: "Pending", joined: "12 phút trước" },
+    { id: 3, name: "User_7703", email: "u7703.dev@gmail.com", role: "Học viên", status: "Active", joined: "1 giờ trước" },
+    { id: 4, name: "User_1129", email: "test_bot@edu.vn", role: "Học viên", status: "Banned", joined: "3 giờ trước" },
+    { id: 5, name: "Expert_Dev", email: "dev_expert@learning.io", role: "Giảng viên", status: "Active", joined: "5 giờ trước" },
+  ];
+
+  const seedCourses = [
+    { id: 1, title: "Java Backend Masterclass", instructor: "Giảng viên Java", date: "10:30" },
+    { id: 2, title: "Spring Boot AI Integration", instructor: "Giảng viên AI", date: "09:15" },
+    { id: 3, title: "React Native Advanced", instructor: "Giảng viên FE", date: "Hôm qua" },
+  ];
 
   return (
     <div className={`min-h-screen flex overflow-hidden transition-colors duration-300 ${theme.bg}`}>
-      {/* 3. ĐẢM BẢO SIDEBAR NHẬN ĐỦ PROPS */}
       <Sidebar
-        isOpen={isSidebarOpen}
-        setIsOpen={setIsSidebarOpen} 
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        menuItems={menuItems}
-        onLogout={onLogout}
-        isDarkMode={isDarkMode}
-        theme={theme}
+        isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen}
+        activeTab={activeTab} setActiveTab={setActiveTab}
+        menuItems={menuItems} onLogout={onLogout}
+        isDarkMode={isDarkMode} theme={theme}
       />
 
       <main className="flex-1 h-screen overflow-y-auto relative no-scrollbar">
         <TopBar
           isSidebarOpen={isSidebarOpen}
-          setIsSidebarOpen={setIsSidebarOpen}
+          setIsSidebarOpen={setIsSidebarOpen} // ĐỔI TỪ setIsOpen THÀNH setIsSidebarOpen
           isDarkMode={isDarkMode}
           setIsDarkMode={setIsDarkMode}
           theme={theme}
         />
 
-        <div className="p-8 max-w-7xl mx-auto">
+        <div className="p-4 md:p-10 xl:p-12 max-w-[1600px] mx-auto">
           <AnimatePresence mode="wait">
-            {/* ... các phần render Tab giữ nguyên ... */}
             {activeTab === "dashboard" && (
-              <motion.div key="dashboard" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                <div className="mb-10">
-                  <h1 className={`text-3xl font-black mb-2 ${theme.text}`}>Bảng điều khiển Quản trị</h1>
-                  <p className={`${theme.textMuted} font-medium`}>Hệ thống đang hoạt động ổn định.</p>
+              <motion.div key="dashboard">
+                <div className="mb-8 md:mb-12">
+                  <h1 className={`text-2xl md:text-4xl xl:text-5xl font-black mb-2 ${theme.text}`}>
+                    Bảng điều khiển Quản trị
+                  </h1>
+                  <p className={`text-xs md:text-base ${theme.textMuted} font-medium`}>
+                    Chào mừng trở lại! Hệ thống đang vận hành với hiệu suất tối ưu.
+                  </p>
                 </div>
+
                 <StatsGrid stats={stats} theme={theme} />
-                <div className="grid lg:grid-cols-3 gap-10 mt-10">
-                  <div className="lg:col-span-2"><RecentUsersTable isDarkMode={isDarkMode} theme={theme} users={[]} /></div>
-                  <CourseApprovals isDarkMode={isDarkMode} theme={theme} courses={[]} />
+
+                {/* Điều chỉnh tỉ lệ 2:1 trên desktop để bảng người dùng rộng ra */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-10 mt-10 md:mt-16">
+                  <div className="lg:col-span-2 order-2 lg:order-1">
+                    <RecentUsersTable theme={theme} users={seedUsers} isDarkMode={isDarkMode} />
+                  </div>
+                  <div className="order-1 lg:order-2 space-y-8">
+                    <CourseApprovals theme={theme} courses={seedCourses} isDarkMode={isDarkMode} />
+                  </div>
                 </div>
               </motion.div>
             )}
@@ -149,7 +158,7 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
                   <h1 className={`text-3xl font-black mb-2 ${theme.text}`}>Bảo mật & Phân quyền</h1>
                   <p className={`${theme.textMuted} font-medium`}>Quản lý vai trò nhân sự và cấu hình truy cập hệ thống.</p>
                 </div>
-                <SecurityPermissions theme={theme} />
+                <SecurityPermissions theme={theme} isDarkMode={false} />
               </motion.div>
             )}
 
@@ -157,18 +166,9 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
               <motion.div key="settings" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                 <div className="mb-10">
                   <h1 className={`text-3xl font-black mb-2 ${theme.text}`}>Cấu hình hệ thống</h1>
-                  <p className={`${theme.textMuted} font-medium`}>Thiết lập tỷ lệ hoa hồng, thuế và các khóa API kết nối.</p>
+                  <p className={`${theme.textMuted} font-medium`}>Thiết lập tỷ lệ hoa hồng và API.</p>
                 </div>
-                <SystemSettings theme={theme} />
-              </motion.div>
-            )}
-
-            {!developedTabs.includes(activeTab) && (
-              <motion.div key="fallback" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center py-40">
-                <div className={`p-8 rounded-[40px] ${isDarkMode ? 'bg-slate-900' : 'bg-slate-100'} mb-6`}>
-                  <Settings className={`w-16 h-16 ${theme.textMuted} animate-spin-slow`} />
-                </div>
-                <h2 className={`text-2xl font-black ${theme.text}`}>Đang phát triển</h2>
+                <SystemSettings theme={theme} isDarkMode={false} />
               </motion.div>
             )}
           </AnimatePresence>

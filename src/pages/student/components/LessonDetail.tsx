@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
-  ChevronLeft, PlayCircle, FileText, Smartphone,
-  CheckCircle2, Clock, ChevronDown, Lock
+  ChevronLeft, PlayCircle, FileText,
+  CheckCircle2, Clock, ChevronDown
 } from "lucide-react";
+// Giả định VideoPlayerView đã được import đúng
 import { VideoPlayerView } from "./VideoPlayerView";
 
 interface LessonDetailProps {
@@ -14,99 +15,35 @@ const chapters = [
   {
     id: 1,
     title: "Bắt đầu: Cài đặt & Hello World",
-    duration: "3 giờ để hoàn thành",
-    description: "Cài đặt Python và trình soạn thảo mã nguồn. Đây là bước bắt buộc để bắt đầu lập trình thực tế.",
-    content: { videos: 6, readings: 5, apps: 2 },
+    duration: "3 giờ",
+    description: "Cài đặt Python và trình soạn thảo mã nguồn. Đây là bước bắt buộc để bạn có thể thực hành lập trình thực tế ngay lập tức.",
+    content: { videos: 6, readings: 5 },
     isCompleted: true
   },
   {
     id: 2,
-    title: "Variables, Expressions và Statements",
-    duration: "2 giờ để hoàn thành",
-    description: "Học cách lưu trữ dữ liệu vào biến, thực hiện phép toán và hiểu các kiểu dữ liệu cơ bản.",
-    content: { videos: 4, readings: 3, apps: 1 },
+    title: "Variables, Expressions & Statements",
+    duration: "2 giờ",
+    description: "Học cách lưu trữ dữ liệu vào biến, thực hiện các phép toán cơ bản và hiểu về các kiểu dữ liệu trong Python.",
+    content: { videos: 4, readings: 3 },
     isCompleted: true
   },
   {
     id: 3,
     title: "Cấu trúc điều kiện (If/Else)",
-    duration: "2 giờ để hoàn thành",
-    description: "Giúp chương trình có khả năng ra quyết định dựa trên các điều kiện logic.",
-    content: { videos: 5, readings: 2, apps: 2 },
+    duration: "2 giờ",
+    description: "Hướng dẫn chương trình cách ra quyết định logic, giúp ứng dụng của bạn trở nên thông minh hơn.",
+    content: { videos: 5, readings: 2 },
     isCompleted: true
   },
   {
     id: 4,
     title: "Functions & Tái sử dụng mã nguồn",
-    duration: "3 giờ để hoàn thành",
-    description: "Học cách viết hàm để tối ưu hóa mã nguồn, giúp chương trình gọn gàng hơn.",
-    content: { videos: 7, readings: 4, apps: 3 },
+    duration: "3 giờ",
+    description: "Học cách đóng gói mã nguồn vào các hàm (functions) để tối ưu hóa hiệu suất và dễ dàng bảo trì.",
+    content: { videos: 7, readings: 4 },
     isCompleted: false
-  },
-  {
-    id: 5,
-    title: "Loops and Iterations",
-    duration: "4 hours to complete",
-    description: "Sử dụng vòng lặp For và While để xử lý các công việc lặp đi lặp lại một cách tự động và hiệu quả.",
-    content: { videos: 8, readings: 3, apps: 2 },
-    isCompleted: false
-  },
-  {
-    id: 6,
-    title: "Strings & Text Processing",
-    duration: "2.5 hours to complete",
-    description: "Khám phá sức mạnh của việc xử lý chuỗi văn bản, cắt ghép và tìm kiếm thông tin trong dữ liệu chữ.",
-    content: { videos: 5, readings: 3, apps: 1 },
-    isCompleted: false
-  },
-  {
-    id: 7,
-    title: "Files: Reading and Writing",
-    duration: "3 hours to complete",
-    description: "Học cách mở, đọc dữ liệu từ file .txt, .csv và ghi kết quả xử lý ngược lại vào bộ nhớ máy tính.",
-    content: { videos: 6, readings: 2, apps: 2 },
-    isCompleted: false
-  },
-  {
-    id: 8,
-    title: "Lists: Managing Sequences of Data",
-    duration: "3 hours to complete",
-    description: "Tìm hiểu về cấu trúc dữ liệu List - một trong những công cụ mạnh mẽ nhất của Python để quản lý danh sách dữ liệu.",
-    content: { videos: 6, readings: 4, apps: 2 },
-    isCompleted: false
-  },
-  {
-    id: 9,
-    title: "Dictionaries and Tuples",
-    duration: "3.5 hours to complete",
-    description: "Sử dụng cặp Key-Value để lưu trữ dữ liệu phức tạp và tìm hiểu tính bất biến của Tuples trong lập trình.",
-    content: { videos: 7, readings: 5, apps: 3 },
-    isCompleted: false
-  },
-  {
-    id: 10,
-    title: "Regular Expressions (Regex)",
-    duration: "3 hours to complete",
-    description: "Học ngôn ngữ của các biểu thức chính quy để tìm kiếm và trích xuất các mẫu dữ liệu phức tạp từ văn bản.",
-    content: { videos: 5, readings: 3, apps: 2 },
-    isCompleted: false
-  },
-  {
-    id: 11,
-    title: "Networked Programs (Sockets & HTTP)",
-    duration: "4 hours to complete",
-    description: "Kết nối Python với Internet. Học cách gửi yêu cầu HTTP và lấy dữ liệu từ các trang web (Web Scraping).",
-    content: { videos: 8, readings: 4, apps: 1 },
-    isCompleted: false
-  },
-  {
-    id: 12,
-    title: "Using Web Services & JSON",
-    duration: "4.5 hours to complete",
-    description: "Làm việc với API, hiểu định dạng dữ liệu JSON và cách tích hợp các dịch vụ bên thứ ba vào ứng dụng của bạn.",
-    content: { videos: 9, readings: 6, apps: 4 },
-    isCompleted: false
-  },
+  }
 ];
 
 export const LessonDetail = ({ onBack }: LessonDetailProps) => {
@@ -117,64 +54,97 @@ export const LessonDetail = ({ onBack }: LessonDetailProps) => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto pb-20 px-4 sm:px-0">
+    <div className="max-w-4xl mx-auto pb-20 px-4 md:px-6">
+      {/* 1. Nút Quay lại - Cải thiện độ tương phản */}
       <motion.button
         initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}
         onClick={onBack}
-        className="flex items-center gap-2 text-slate-500 font-bold hover:text-indigo-600 mb-8 group"
+        className="flex items-center gap-2 text-slate-500 font-bold text-xs md:text-sm hover:text-indigo-600 mb-6 md:mb-10 group transition-all"
       >
-        <ChevronLeft className="group-hover:-translate-x-1 transition-transform" />
-        Quay lại khóa học của tôi
+        <ChevronLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+        QUAY LẠI KHÓA HỌC
       </motion.button>
 
-      <div className="mb-12">
+      {/* 2. Header - Tăng kích thước font trên Desktop */}
+      <div className="mb-10 md:mb-14">
         <div className="flex items-center gap-3 mb-4">
-          <span className="bg-indigo-600 text-white text-[10px] font-black px-3 py-1 rounded-lg uppercase">
+          <span className="bg-indigo-600 text-white text-[10px] md:text-xs font-black px-3 py-1 rounded-lg uppercase tracking-wider shadow-sm shadow-indigo-200">
             Lộ trình Python Pro
           </span>
-          <span className="text-slate-400 font-bold text-sm flex items-center gap-1">
-            <Clock size={16} /> 12 Học phần
+          <span className="text-slate-500 font-bold text-xs md:text-sm flex items-center gap-1.5">
+            <Clock size={16} className="text-indigo-500" /> 12 Học phần
           </span>
         </div>
-        <h1 className="text-4xl sm:text-5xl font-black text-slate-900 mb-6">Lập trình Python</h1>
-        <p className="text-slate-500 font-medium text-lg max-w-2xl">
+        <h1 className="text-3xl md:text-5xl font-black text-slate-900 mb-4 md:mb-6 tracking-tight leading-tight">
+          Lập trình Python
+        </h1>
+        <p className="text-slate-600 font-medium text-base md:text-lg leading-relaxed max-w-2xl">
           Từ những dòng code đầu tiên đến ứng dụng AI. Lộ trình bài bản giúp bạn làm chủ ngôn ngữ phổ biến nhất thế giới.
         </p>
       </div>
 
-      <div className="space-y-6">
+      {/* 3. Chapters List */}
+      <div className="space-y-5 md:space-y-6">
         {chapters.map((chapter, idx) => (
           <motion.div
             key={chapter.id}
-            className={`relative bg-white border rounded-32 p-8 transition-all group ${chapter.isCompleted ? "border-emerald-100" : "border-slate-100 shadow-sm"}`}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: idx * 0.05 }}
+            className={`relative bg-white border rounded-[28px] md:rounded-[32px] p-6 md:p-8 transition-all group hover:shadow-xl hover:shadow-indigo-500/5 ${chapter.isCompleted ? "border-emerald-100 bg-emerald-50/5" : "border-slate-100 shadow-sm"
+              }`}
           >
-            <div className="flex flex-col sm:flex-row justify-between gap-4 mb-6">
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-5 md:mb-6">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <h2 className="text-xl font-black text-slate-900">{chapter.title}</h2>
-                  {chapter.isCompleted && <CheckCircle2 size={20} className="text-emerald-500" />}
+                  <h2 className="text-lg md:text-2xl font-black text-slate-900 group-hover:text-indigo-600 transition-colors">
+                    {chapter.title}
+                  </h2>
+                  {chapter.isCompleted && (
+                    <div className="bg-emerald-500 p-0.5 rounded-full">
+                      <CheckCircle2 size={16} className="text-white" />
+                    </div>
+                  )}
                 </div>
-                <p className="text-indigo-600 text-sm font-black uppercase">
-                  Học phần {chapter.id} • <span className="text-slate-400 normal-case">{chapter.duration}</span>
+                <p className="text-indigo-600 text-[10px] md:text-xs font-black uppercase tracking-widest flex items-center gap-2">
+                  Học phần {chapter.id}
+                  <span className="text-slate-300">•</span>
+                  <span className="text-slate-400 normal-case font-bold">{chapter.duration}</span>
                 </p>
               </div>
-              <button className="text-indigo-600 font-bold text-sm flex items-center gap-1">
-                Chi tiết học phần <ChevronDown size={18} />
+
+              <button className="hidden md:flex items-center gap-2 text-slate-400 font-bold text-sm hover:text-indigo-600 transition-colors">
+                Chi tiết <ChevronDown size={18} />
               </button>
             </div>
-            <p className="text-slate-500 mb-8 text-sm">{chapter.description}</p>
-            <div className="flex flex-wrap items-center gap-8 pt-6 border-t border-slate-50">
-              <div className="flex items-center gap-2 text-slate-700 font-bold text-sm"><PlayCircle size={20} /> {chapter.content.videos} videos</div>
-              <div className="flex items-center gap-2 text-slate-700 font-bold text-sm"><FileText size={20} /> {chapter.content.readings} bài đọc</div>
-              <div className="ml-auto">
-                <button
-                  onClick={() => setSelectedVideo(chapter)}
-                  className="bg-slate-900 text-white px-6 py-3 rounded-2xl font-black text-xs hover:bg-indigo-600 transition-all"
-                >
-                  {chapter.isCompleted ? "Học lại" : "Bắt đầu học"}
-                </button>
+
+            <p className="text-slate-600 text-sm md:text-base leading-relaxed mb-6 md:mb-8 max-w-3xl">
+              {chapter.description}
+            </p>
+
+            {/* Bottom Section */}
+            <div className="flex items-center justify-between pt-5 md:pt-6 border-t border-slate-50">
+              <div className="flex items-center gap-5 md:gap-8">
+                <div className="flex items-center gap-2 text-slate-700 font-bold text-xs md:text-sm">
+                  <PlayCircle size={20} className="text-indigo-500" />
+                  {chapter.content.videos} <span className="hidden sm:inline">videos</span>
+                </div>
+                <div className="flex items-center gap-2 text-slate-700 font-bold text-xs md:text-sm">
+                  <FileText size={20} className="text-amber-500" />
+                  {chapter.content.readings} <span className="hidden sm:inline">bài đọc</span>
+                </div>
               </div>
+
+              <button
+                onClick={() => setSelectedVideo(chapter)}
+                className={`px-6 md:px-8 py-3 md:py-4 rounded-xl md:rounded-2xl font-black text-xs md:text-sm transition-all active:scale-95 shadow-lg ${chapter.isCompleted
+                    ? "bg-slate-100 text-slate-500 hover:bg-emerald-500 hover:text-white shadow-none"
+                    : "bg-slate-900 text-white hover:bg-indigo-600 shadow-indigo-100"
+                  }`}
+              >
+                {chapter.isCompleted ? "HỌC LẠI" : "BẮT ĐẦU HỌC"}
+              </button>
             </div>
           </motion.div>
         ))}

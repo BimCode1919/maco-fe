@@ -1,5 +1,6 @@
-import { motion } from "motion/react";
-import { PlayCircle } from "lucide-react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { PlayCircle, CheckCircle2, Filter } from "lucide-react";
 
 interface MyCoursesTabProps {
   myCourses: any[];
@@ -7,16 +8,40 @@ interface MyCoursesTabProps {
 }
 
 export const MyCoursesTab = ({ myCourses, onCourseClick }: MyCoursesTabProps) => {
+  const [activeFilter, setActiveFilter] = useState("Tất cả");
+
+  const filters = ["Tất cả", "Đang học", "Đã hoàn thành"];
+
+  const filteredCourses = myCourses.filter(course => {
+    if (activeFilter === "Đã hoàn thành") return course.progress === 100;
+    if (activeFilter === "Đang học") return course.progress < 100;
+    return true;
+  });
+
   return (
-    <div className="space-y-8">
-      {/* Tiêu đề và Bộ lọc */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <h1 className="text-3xl font-black text-slate-900">Khóa học của tôi</h1>
-        <div className="flex gap-2">
-          {["Tất cả", "Đang học", "Đã hoàn thành"].map((filter) => (
+    <div className="space-y-6 pb-10">
+      {/* 1. Header & Filters - Thu nhỏ cho Mobile */}
+      <div className="flex flex-col gap-4 px-1">
+        <div className="flex justify-between items-end">
+          <div>
+            <h1 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">
+              Khóa học
+            </h1>
+            <p className="text-[10px] md:text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+              {myCourses.length} Khóa học của bạn
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-1 p-1 bg-slate-100/60 rounded-[14px] w-fit overflow-x-auto no-scrollbar">
+          {filters.map((filter) => (
             <button
               key={filter}
-              className="px-4 py-2 rounded-xl text-sm font-bold bg-white border border-slate-100 text-slate-600 hover:border-indigo-600 hover:text-indigo-600 transition-all active:scale-95"
+              onClick={() => setActiveFilter(filter)}
+              className={`px-3 py-1.5 md:px-5 md:py-2 rounded-[10px] text-[11px] md:text-xs font-black transition-all ${activeFilter === filter
+                  ? "bg-white text-indigo-600 shadow-sm"
+                  : "text-slate-500 hover:text-slate-700"
+                }`}
             >
               {filter}
             </button>
@@ -24,57 +49,79 @@ export const MyCoursesTab = ({ myCourses, onCourseClick }: MyCoursesTabProps) =>
         </div>
       </div>
 
-      {/* Danh sách khóa học */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {myCourses.map((course, idx) => (
-          <motion.div
-            key={course.id}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: idx * 0.1 }}
-            onClick={() => onCourseClick(course)}
-            className="bg-white rounded-32 border border-slate-100 shadow-sm overflow-hidden group cursor-pointer hover:shadow-xl hover:shadow-indigo-500/5 transition-all"
-          >
-            <div className="aspect-video relative overflow-hidden">
-              <img
-                src={course.image}
-                alt={course.title}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-indigo-600 shadow-lg">
-                  <PlayCircle size={24} />
-                </div>
-              </div>
-              {course.progress === 100 && (
-                <div className="absolute top-4 right-4 bg-emerald-500 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase">
-                  Hoàn thành
-                </div>
-              )}
-            </div>
+      {/* 2. Courses Grid - 2 cột cho Mobile, 4 cột cho PC */}
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-6">
+        <AnimatePresence mode="popLayout">
+          {filteredCourses.map((course, idx) => (
+            <motion.div
+              key={course.id}
+              layout
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.2, delay: idx * 0.02 }}
+              onClick={() => onCourseClick(course)}
+              className="bg-white rounded-[20px] md:rounded-[24px] border border-slate-100 shadow-sm overflow-hidden group cursor-pointer hover:shadow-xl hover:shadow-indigo-500/5 transition-all flex flex-col"
+            >
+              {/* Thumbnail - Tỉ lệ nén hơn cho Mobile */}
+              <div className="aspect-[4/3] md:aspect-[16/10] relative overflow-hidden">
+                <img
+                  src={course.image}
+                  alt={course.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
 
-            <div className="p-6">
-              <h4 className="font-black text-slate-900 mb-4 line-clamp-1 group-hover:text-indigo-600 transition-colors">
-                {course.title}
-              </h4>
-              <div className="flex items-center justify-between text-xs font-bold text-slate-400 mb-4">
-                <span>Tiến độ: {course.progress}%</span>
-                <span>{course.lessons} bài học</span>
+                {/* Status Badge Mini */}
+                <div className="absolute top-2 right-2">
+                  {course.progress === 100 ? (
+                    <div className="bg-emerald-500 text-white text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded-md shadow-lg">
+                      DONE
+                    </div>
+                  ) : (
+                    <div className="bg-black/50 backdrop-blur-md text-white text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded-md">
+                      {course.progress}%
+                    </div>
+                  )}
+                </div>
               </div>
-              <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden mb-6">
-                <div
-                  className={`h-full transition-all duration-1000 ${course.progress === 100 ? 'bg-emerald-500' : 'bg-indigo-600'}`}
-                  style={{ width: `${course.progress}%` }}
-                ></div>
+
+              {/* Content Area - Giảm padding mạnh cho Mobile */}
+              <div className="p-3 md:p-4 flex flex-col flex-1">
+                <div className="h-8 md:h-10">
+                  <h4 className="text-[12px] md:text-[14px] font-black text-slate-900 leading-tight line-clamp-2 group-hover:text-indigo-600 transition-colors">
+                    {course.title}
+                  </h4>
+                </div>
+
+                <div className="mt-3 space-y-2">
+                  {/* Progress bar thu nhỏ */}
+                  <div className="w-full h-1 bg-slate-100 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full ${course.progress === 100 ? 'bg-emerald-500' : 'bg-indigo-600'}`}
+                      style={{ width: `${course.progress}%` }}
+                    />
+                  </div>
+
+                  {/* Button Mini - Chỉ hiện text, bỏ background để đỡ tốn chỗ trên mobile */}
+                  <button className={`w-full py-2 rounded-[10px] font-black text-[10px] md:text-[12px] transition-all ${course.progress === 100
+                      ? "bg-slate-50 text-slate-400"
+                      : "bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white"
+                    }`}>
+                    {course.progress === 100 ? "Học lại" : "Tiếp tục"}
+                  </button>
+                </div>
               </div>
-              <button className="w-full py-3 bg-slate-50 text-slate-900 rounded-2xl font-bold text-sm group-hover:bg-indigo-600 group-hover:text-white transition-all">
-                {course.progress === 100 ? "Học lại" : "Tiếp tục học"}
-              </button>
-            </div>
-          </motion.div>
-        ))}
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
+
+      {/* Empty State */}
+      {filteredCourses.length === 0 && (
+        <div className="py-16 text-center">
+          <p className="text-slate-400 text-[12px] font-bold uppercase tracking-widest">Trống</p>
+        </div>
+      )}
     </div>
   );
 };

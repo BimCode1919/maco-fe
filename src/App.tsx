@@ -7,12 +7,20 @@ import { StudentDashboard } from "./pages/student/StudentDashboard";
 import { InstructorDashboard } from "./pages/instructor/InstructorDashboard";
 import { AdminDashboard } from "./pages/admin/AdminDashboard";
 import { AnimatePresence } from "motion/react";
+import { CourseDetailPage } from "./pages/public/CourseDetailPage";
+import { BecomeInstructorPage } from "./pages/public/BecomeInstructorPage";
 
 type AuthMode = "login" | "register-select" | "register-student" | "register-instructor" | null;
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState("home");
+  const [selectedCourse, setSelectedCourse] = useState<any>(null);
   const [authMode, setAuthMode] = useState<AuthMode>(null);
+
+  const handleViewCourse = (course: any) => {
+    setSelectedCourse(course);
+    setCurrentPage("course-detail");
+  };
 
   if (currentPage === "student-dashboard") {
     return <StudentDashboard onLogout={() => setCurrentPage("home")} />;
@@ -26,14 +34,24 @@ export default function App() {
     return <AdminDashboard onLogout={() => setCurrentPage("home")} />;
   }
 
+  if (currentPage === "become-instructor") {
+    return (
+      <BecomeInstructorPage
+        setCurrentPage={setCurrentPage}
+        openAuth={(mode) => setAuthMode(mode)}
+      />
+    );
+  }
+
   return (
     <div className="relative">
       <AnimatePresence>
         {authMode && (
-          <AuthModal 
-            mode={authMode} 
-            onClose={() => setAuthMode(null)} 
+          <AuthModal
+            mode={authMode}
+            onClose={() => setAuthMode(null)}
             setMode={setAuthMode}
+            onNavigate={(page) => setCurrentPage(page)}
             onSuccess={(dashboard) => {
               setAuthMode(null);
               setCurrentPage(dashboard);
@@ -45,13 +63,19 @@ export default function App() {
       {currentPage === "home" ? (
         <LandingPage onAuthClick={(mode) => setAuthMode(mode)} setCurrentPage={setCurrentPage} />
       ) : currentPage === "courses" ? (
-        <CoursesPage setCurrentPage={setCurrentPage} openAuth={(mode) => setAuthMode(mode)} />
+        <CoursesPage setCurrentPage={setCurrentPage} openAuth={(mode) => setAuthMode(mode)} onCourseClick={handleViewCourse} />
+      ) : currentPage === "course-detail" && selectedCourse ? (
+        <CourseDetailPage
+          course={selectedCourse} // Đổ dữ liệu object vào
+          setCurrentPage={setCurrentPage}
+          openAuth={(mode) => setAuthMode(mode)}
+        />
       ) : currentPage === "instructors" ? (
         <InstructorsPage setCurrentPage={setCurrentPage} openAuth={(mode) => setAuthMode(mode)} />
       ) : (
         <div className="pt-48 pb-32 text-center min-h-screen bg-slate-50">
           <h1 className="text-4xl font-black text-slate-900">Trang này đang được phát triển</h1>
-          <button 
+          <button
             onClick={() => setCurrentPage("home")}
             className="mt-8 text-indigo-600 font-bold hover:underline"
           >

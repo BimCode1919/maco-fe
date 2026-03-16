@@ -15,197 +15,221 @@ const courseData = [
     {
         id: 1,
         name: "Mastering Large Language Models",
-        students: 850,
+        students: 45, // Giảm xuống mức MVP
         rating: 4.8,
-        revenue: "425.000.000đ",
+        revenue: "9.000.000đ", // Giá thực tế cho giai đoạn đầu
         status: "Đang bán",
         category: "Artificial Intelligence",
         color: "bg-indigo-50 text-indigo-600",
-        icon: "LLM",
         image: "https://media.licdn.com/dms/image/v2/D5612AQELiz9P4VMUIA/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1723273771853?e=2147483647&v=beta&t=p9f3bFiAzTToh3wDqgz0vcjICaMxXxuutMNLCfqha7o"
     },
     {
         id: 2,
         name: "AI trong Digital Marketing",
-        students: 980,
+        students: 32,
         rating: 4.9,
-        revenue: "294.000.000đ",
+        revenue: "6.400.000đ",
         status: "Đang bán",
         category: "Marketing",
         color: "bg-blue-50 text-blue-600",
-        icon: "DM",
         image: "https://caodang.fpt.edu.vn/wp-content/uploads/2023/12/FPT-Polytechnic_AI_Marketing-5.webp"
     },
     {
         id: 3,
         name: "Usability-Testing Essentials",
-        students: 420,
+        students: 18,
         rating: 4.7,
-        revenue: "126.000.000đ",
+        revenue: "3.600.000đ",
         status: "Đang bán",
         category: "Product Design",
         color: "bg-orange-50 text-orange-600",
-        icon: "UT",
         image: "https://blog.pwskills.com/wp-content/uploads/2025/04/usability-testing.jpg"
     },
     {
         id: 4,
         name: "UX Research Fundamentals",
-        students: 310,
-        rating: 4.9,
-        revenue: "93.000.000đ",
-        status: "Đang bán",
+        students: 12,
+        rating: 4.5,
+        revenue: "2.400.000đ",
+        status: "Nháp", // Thay đổi trạng thái cho đa dạng
         category: "UIUX Design",
         color: "bg-emerald-50 text-emerald-600",
-        icon: "UX",
         image: "https://graphicdesignjunction.com/wp-content/uploads/2023/05/uxresearch_guide_social.jpg"
     },
 ];
 
+const formatCurrency = (value) => {
+    const num = parseInt(value.replace(/\D/g, ""));
+    if (num >= 1000000000) return (num / 1000000000).toFixed(2) + "B";
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + "M";
+    return num.toLocaleString() + "đ";
+};
+
 export const InstructorOverview = () => {
-    // Tính toán thống kê tổng hợp từ courseData
     const totalStudents = courseData.reduce((acc, curr) => acc + curr.students, 0);
     const avgRating = (courseData.reduce((acc, curr) => acc + curr.rating, 0) / courseData.length).toFixed(1);
-    const totalRevenue = "1.538.000.000đ"; // Tổng giả lập
+    const rawRevenue = "21400000"; // Để dạng số để dễ tính toán
 
     return (
-        <div className="p-8 max-w-7xl mx-auto">
-            {/* Welcome Section */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6"
-            >
+        <div className="p-4 lg:p-8 max-w-[1600px] mx-auto space-y-8">
+            {/* 1. Welcome Section - Làm gọn và sang hơn */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-black text-slate-900 mb-2">Xin chào, Trần! 👋</h1>
-                    <p className="text-slate-500 font-medium italic">Hôm nay là một ngày tuyệt vời để cập nhật kiến thức mới.</p>
+                    <h1 className="text-2xl lg:text-3xl font-black text-slate-900 tracking-tight">
+                        Xin chào, Trần! 👋
+                    </h1>
+                    <p className="text-slate-500 text-sm font-medium mt-1">
+                        Hệ thống của bạn đang tăng trưởng tốt trong 30 ngày qua.
+                    </p>
                 </div>
-                <div className="bg-emerald-50 px-6 py-3 rounded-2xl border border-emerald-100 flex items-center gap-3">
-                    <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center text-white">
-                        <TrendingUp size={18} />
-                    </div>
-                    <span className="text-sm font-black text-emerald-700">+12.4% <span className="text-slate-400 font-bold ml-1 text-xs">so với tháng trước</span></span>
+                <div className="flex items-center gap-2 bg-emerald-50 px-4 py-2 rounded-xl border border-emerald-100/50">
+                    <TrendingUp size={16} className="text-emerald-600" />
+                    <span className="text-xs font-bold text-emerald-700">
+                        +12.4% <span className="text-emerald-600/60 font-medium ml-1">tăng trưởng</span>
+                    </span>
                 </div>
-            </motion.div>
+            </div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            {/* Stats Grid - Hiển thị các con số mới */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
                 {[
-                    { label: "Tổng học viên", value: totalStudents.toLocaleString(), icon: Users, color: "bg-blue-600", shadow: "shadow-blue-100" },
-                    { label: "Khóa học", value: courseData.length.toString().padStart(2, '0'), icon: BookOpen, color: "bg-indigo-600", shadow: "shadow-indigo-100" },
-                    { label: "Đánh giá TB", value: avgRating, icon: Star, color: "bg-amber-500", shadow: "shadow-amber-100" },
-                    { label: "Doanh thu", value: totalRevenue, icon: DollarSign, color: "bg-emerald-600", shadow: "shadow-emerald-100" },
+                    { label: "Tổng học viên", value: totalStudents.toLocaleString(), icon: Users, color: "text-blue-600", bg: "bg-blue-50" },
+                    { label: "Khóa học", value: courseData.length.toString().padStart(2, '0'), icon: BookOpen, color: "text-indigo-600", bg: "bg-indigo-50" },
+                    { label: "Đánh giá TB", value: avgRating, icon: Star, color: "text-amber-500", bg: "bg-amber-50" },
+                    { label: "Doanh thu", value: formatCurrency(rawRevenue), icon: DollarSign, color: "text-emerald-600", bg: "bg-emerald-50" },
                 ].map((stat, idx) => (
                     <motion.div
                         key={idx}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: idx * 0.1 }}
-                        className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all group"
+                        whileHover={{ y: -4 }}
+                        className="bg-white p-5 lg:p-6 rounded-[24px] border border-slate-100 shadow-sm flex flex-col justify-between min-h-[140px]"
                     >
-                        <div className={`w-12 h-12 ${stat.color} rounded-2xl flex items-center justify-center text-white mb-4 shadow-lg ${stat.shadow} group-hover:scale-110 transition-transform`}>
-                            <stat.icon size={22} />
+                        <div className={`w-10 h-10 ${stat.bg} ${stat.color} rounded-xl flex items-center justify-center`}>
+                            <stat.icon size={20} />
                         </div>
-                        <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] mb-1">{stat.label}</p>
-                        <p className="text-2xl font-black text-slate-900">{stat.value}</p>
+                        <div>
+                            <p className="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-1">{stat.label}</p>
+                            <p className="text-xl lg:text-2xl font-black text-slate-900">{stat.value}</p>
+                        </div>
                     </motion.div>
                 ))}
             </div>
 
-            <div className="grid lg:grid-cols-3 gap-10">
-                {/* My Courses List - Dạng Horizontal Card */}
+            <div className="grid lg:grid-cols-3 gap-8">
+                {/* 3. Main Content: Course Management */}
                 <div className="lg:col-span-2 space-y-6">
-                    <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight">Quản lý khóa học</h3>
-                        <button className="flex items-center gap-1 text-indigo-600 font-black text-xs uppercase hover:underline">
-                            Xem tất cả <ArrowUpRight size={14} />
-                        </button>
-                    </div>
-
-                    <div className="grid gap-4">
-                        {courseData.slice(0, 4).map((course, idx) => (
-                            <motion.div
-                                key={course.id}
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: idx * 0.1 }}
-                                className="bg-white p-4 rounded-[28px] border border-slate-100 shadow-sm flex flex-col md:flex-row items-center gap-6 group hover:border-indigo-600/30 transition-all"
-                            >
-                                <div className="w-full md:w-36 h-24 rounded-2xl overflow-hidden shadow-inner flex-shrink-0">
-                                    <img src={course.image} alt={course.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                                </div>
-
-                                <div className="flex-1 w-full space-y-3">
-                                    <div className="flex items-start justify-between">
-                                        <div>
-                                            <h4 className="font-black text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">{course.name}</h4>
-                                            <span className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md ${course.color}`}>{course.category}</span>
-                                        </div>
-                                        <span className={`px-3 py-1 ${course.status === 'Đang bán' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-400'} text-[9px] font-black rounded-full uppercase`}>
-                                            {course.status}
-                                        </span>
-                                    </div>
-
-                                    <div className="flex items-center gap-8">
-                                        <div>
-                                            <p className="text-[9px] font-bold text-slate-400 uppercase">Học viên</p>
-                                            <p className="text-sm font-black text-slate-800">{course.students.toLocaleString()}</p>
-                                        </div>
-                                        <div>
-                                            <p className="text-[9px] font-bold text-slate-400 uppercase">Đánh giá</p>
-                                            <p className="text-sm font-black text-slate-800 flex items-center gap-1">
-                                                {course.rating} <Star size={12} className="text-amber-500 fill-amber-500" />
-                                            </p>
-                                        </div>
-                                        <div>
-                                            <p className="text-[9px] font-bold text-slate-400 uppercase">Doanh thu</p>
-                                            <p className="text-sm font-black text-emerald-600">{course.revenue}</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <button className="p-3 rounded-2xl bg-slate-50 text-slate-400 hover:bg-indigo-600 hover:text-white transition-all hidden md:block">
-                                    <MoreVertical size={20} />
-                                </button>
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Sidebar: Reviews */}
-                <div className="space-y-8">
-                    <div className="bg-white rounded-[32px] p-8 border border-slate-100 shadow-sm relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-50 rounded-full -mr-12 -mt-12"></div>
-                        <h3 className="text-lg font-black text-slate-900 mb-6 relative z-10">Đánh giá gần đây</h3>
-                        <div className="space-y-6 relative z-10">
-                            {[
-                                { user: "Hoàng Anh", text: "Bài giảng LLM thực sự rất chuyên sâu.", rating: 5, time: "2 phút trước" },
-                                { user: "Minh Thu", text: "Cách giải thích về Transformer rất dễ hiểu.", rating: 5, time: "45 phút trước" },
-                                { user: "Quốc Bảo", text: "Cần thêm bài tập thực hành phần Prompt.", rating: 4, time: "2 giờ trước" },
-                            ].map((review, idx) => (
-                                <div key={idx} className="group">
-                                    <div className="flex items-center justify-between mb-1">
-                                        <p className="text-sm font-black text-slate-900 group-hover:text-indigo-600 transition-colors">{review.user}</p>
-                                        <div className="flex text-amber-400"><Star size={10} fill="currentColor" /></div>
-                                    </div>
-                                    <p className="text-xs text-slate-500 font-medium line-clamp-2 italic">"{review.text}"</p>
-                                    <p className="text-[10px] text-slate-300 font-bold mt-1 uppercase tracking-tighter">{review.time}</p>
-                                </div>
-                            ))}
-                        </div>
-                        <button className="w-full mt-8 py-4 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-indigo-600 transition-all">
+                    <div className="flex items-center justify-between">
+                        <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">Quản lý khóa học</h3>
+                        <button className="text-indigo-600 font-bold text-xs hover:text-indigo-700 transition-colors">
                             Xem tất cả báo cáo
                         </button>
                     </div>
 
-                    {/* Support Card */}
-                    <div className="bg-indigo-600 rounded-[32px] p-8 text-white relative shadow-xl shadow-indigo-100 overflow-hidden group">
-                        <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-white/10 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
-                        <h3 className="text-xl font-black mb-2 tracking-tight">Cần hỗ trợ kỹ thuật?</h3>
-                        <p className="text-indigo-100 text-xs font-medium mb-6 leading-relaxed">Đội ngũ kỹ thuật luôn sẵn sàng giúp bạn tối ưu hóa video và tài liệu học tập.</p>
-                        <button className="px-6 py-3 bg-white text-indigo-600 rounded-xl font-black text-xs uppercase tracking-wider hover:bg-indigo-50 transition-all">
-                            Chat với chúng tôi
-                        </button>
+                    <div className="space-y-3">
+                        {courseData.map((course) => (
+                            <div
+                                key={course.id}
+                                className="group bg-white p-3 rounded-[20px] border border-slate-100 hover:border-indigo-200 hover:shadow-md transition-all flex items-center gap-4"
+                            >
+                                <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-2xl overflow-hidden shrink-0">
+                                    <img src={course.image} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                </div>
+
+                                <div className="flex-1 min-w-0">
+                                    <h4 className="font-bold text-slate-900 text-sm lg:text-base truncate mb-1">
+                                        {course.name}
+                                    </h4>
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex items-center gap-1">
+                                            <Users size={12} className="text-slate-400" />
+                                            <span className="text-[11px] font-bold text-slate-500">{course.students}</span>
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                            <Star size={12} className="text-amber-400 fill-amber-400" />
+                                            <span className="text-[11px] font-bold text-slate-500">{course.rating}</span>
+                                        </div>
+                                        <div className="px-2 py-0.5 bg-slate-50 rounded-md text-[9px] font-bold text-slate-400 uppercase">
+                                            {course.category}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="text-right shrink-0 hidden sm:block px-4">
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Doanh thu</p>
+                                    <p className="text-sm font-black text-emerald-600">{course.revenue}</p>
+                                </div>
+
+                                <button className="p-2 text-slate-300 hover:text-slate-600 transition-colors">
+                                    <MoreVertical size={18} />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* 4. Sidebar: Recent Reviews & Support */}
+                <div className="space-y-6">
+                    <div className="bg-slate-900 rounded-[28px] p-6 text-white overflow-hidden relative">
+                        <div className="relative z-10">
+                            <h3 className="text-sm font-bold uppercase tracking-widest text-slate-400 mb-6">Đánh giá mới</h3>
+                            <div className="space-y-5">
+                                {[
+                                    { user: "Học viên AI", text: "Bài giảng thực sự rất chuyên sâu.", rating: 5 },
+                                    { user: "Học viên UX", text: "Cách giải thích Transformer rất hay.", rating: 5 },
+                                ].map((rev, i) => (
+                                    <div key={i} className="border-b border-white/5 pb-4 last:border-0">
+                                        <div className="flex justify-between items-center mb-1">
+                                            <span className="text-xs font-bold">{rev.user}</span>
+                                            <div className="flex gap-0.5 text-amber-400">
+                                                {[...Array(5)].map((_, i) => <Star key={i} size={8} fill="currentColor" />)}
+                                            </div>
+                                        </div>
+                                        <p className="text-[11px] text-slate-400 italic">"{rev.text}"</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        {/* Decorative element */}
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl"></div>
+                    </div>
+
+                    <div className="bg-slate-900 rounded-[28px] p-6 text-white shadow-xl shadow-slate-200 border border-slate-800 relative overflow-hidden group">
+                        {/* Hiệu ứng gradient mờ ở góc để làm card trông sâu hơn */}
+                        <div className="absolute -top-10 -right-10 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl group-hover:bg-indigo-500/20 transition-all duration-700"></div>
+
+                        <div className="relative z-10">
+                            <div className="w-10 h-10 bg-indigo-500 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-indigo-500/20 transition-transform group-hover:rotate-12">
+                                <BookOpen size={20} className="text-white" />
+                            </div>
+
+                            <h4 className="text-lg font-black mb-1 tracking-tight">Quy trình vận hành</h4>
+                            <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-4">Dành cho Instructor</p>
+
+                            <div className="space-y-4 mb-6">
+                                <div className="flex gap-3">
+                                    <div className="mt-1 w-4 h-4 rounded-full bg-indigo-500/20 flex items-center justify-center shrink-0 border border-indigo-500/30">
+                                        <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full"></div>
+                                    </div>
+                                    <div>
+                                        <p className="text-[11px] font-bold text-slate-200">Xây dựng nội dung</p>
+                                        <p className="text-[10px] text-slate-500 leading-snug">Tải tài liệu hoặc dùng AI tạo Quiz từ link YouTube nhanh chóng.</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-3">
+                                    <div className="mt-1 w-4 h-4 rounded-full bg-indigo-500/20 flex items-center justify-center shrink-0 border border-indigo-500/30">
+                                        <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full"></div>
+                                    </div>
+                                    <div>
+                                        <p className="text-[11px] font-bold text-slate-200">Sử dụng tính năng AI</p>
+                                        <p className="text-[10px] text-slate-500 leading-snug">Tự động hóa việc tạo câu hỏi Quiz từ tài liệu bài giảng.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-black text-[10px] uppercase tracking-wider transition-all flex items-center justify-center gap-2 group/btn">
+                                Trung tâm trợ giúp
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -6,6 +6,8 @@ import { InstructorCTA } from "./components/InstructorCTA";
 import { Partners } from "../../components/Partners";
 import { Nav } from "../../components/Nav";
 import { Footer } from "../../components/Footer";
+import { AITechnology } from "./components/AITechnology"
+import { StudentCTA } from "./components/StudentCTA";
 
 interface LandingPageProps {
   onAuthClick: (mode: "login" | "register-select") => void;
@@ -21,11 +23,10 @@ export const LandingPage = ({ onAuthClick, setCurrentPage }: LandingPageProps) =
         openAuth={onAuthClick} 
       />
       <Hero setCurrentPage={setCurrentPage} />
-      <Stats />
       <Features />
-      <LearningPaths />
+      <AITechnology/>
+      <StudentCTA />
       <InstructorCTA openAuth={() => onAuthClick("register-select")} />
-      <Partners />
       <Footer />
     </div>
   );
