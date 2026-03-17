@@ -8,6 +8,10 @@ import { Nav } from "../../components/Nav";
 import { Footer } from "../../components/Footer";
 import { AITechnology } from "./components/AITechnology"
 import { StudentCTA } from "./components/StudentCTA";
+import { ProblemSection } from "./components/ProblemSection";
+import { SolutionSection } from "./components/SolutionSection";
+import { StudentFeature } from "./components/StudentFeature";
+import { ValueProposition } from "./components/ValueProposition";
 
 interface LandingPageProps {
   onAuthClick: (mode: "login" | "register-select") => void;
@@ -15,18 +19,29 @@ interface LandingPageProps {
 }
 
 export const LandingPage = ({ onAuthClick, setCurrentPage }: LandingPageProps) => {
+  const handleAction = () => {
+    // 1. Chuyển state trang (nếu cần logic của App)
+    setCurrentPage("home");
+
+    // 2. Thực hiện cuộn ngay lập tức
+    const element = document.getElementById('student-feature-section');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
   return (
     <div className="min-h-screen bg-white">
-      <Nav 
-        setCurrentPage={setCurrentPage} 
-        currentPage="home" 
-        openAuth={onAuthClick} 
+      <Nav
+        setCurrentPage={setCurrentPage}
+        currentPage="home"
+        openAuth={onAuthClick}
       />
       <Hero setCurrentPage={setCurrentPage} />
-      <Features />
-      <AITechnology/>
+      <ProblemSection />
+      <SolutionSection openAuth={onAuthClick} />
+      <StudentFeature />
+      <ValueProposition />
       <StudentCTA />
-      <InstructorCTA openAuth={() => onAuthClick("register-select")} />
       <Footer />
     </div>
   );

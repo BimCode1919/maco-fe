@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard,
@@ -6,36 +6,27 @@ import {
   Settings,
   Trophy
 } from "lucide-react";
-import { Sidebar } from "./components/Sidebar";
 import { TopBar } from "./components/TopBar";
 import { OverviewTab } from "./components/OverviewTab";
 import { MyCoursesTab } from "./components/MyCoursesTab";
 import { AchievementsTab } from "./components/AchievementsTab";
 import { SettingsTab } from "./components/SettingsTab";
 import { LessonDetail } from "./components/LessonDetail";
+import { AllCourses, ALL_COURSES } from "./components/AllCourses";
+import { StudentCourseDetail } from "./components/StudentCourseDetail";
+import { MembershipPlan } from "./components/MembershipPlan";
+import { PaymentPage } from "./components/PaymentPage";
 
 interface StudentDashboardProps {
   onLogout: () => void;
 }
 
 export const StudentDashboard = ({ onLogout }: StudentDashboardProps) => {
-  // Mặc định: Mobile đóng, Desktop (rộng > 1024px) thì mở
-  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 1024);
   const [activeTab, setActiveTab] = useState("dashboard");
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
-
-  // Tự động xử lý trạng thái sidebar khi resize trình duyệt
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth > 1024) {
-        setIsSidebarOpen(true);
-      } else {
-        setIsSidebarOpen(false);
-      }
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  const [isViewingCourseDetail, setIsViewingCourseDetail] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedPlan, setSelectedPlan] = useState<any>(null);
 
   const theme = {
     bg: "bg-slate-50",
@@ -52,14 +43,35 @@ export const StudentDashboard = ({ onLogout }: StudentDashboardProps) => {
     { id: "settings", icon: Settings, label: "Cài đặt" },
   ];
 
-  const myCourses = [
-    { id: 1, title: "Lập trình Python cho AI", progress: 65, lastAccessed: "2 giờ trước", lessons: "12/24", image: "https://csc.edu.vn/data/images/tin-tuc/lap-trinh-csdl/kien-thuc-lap-trinh/lap-trinh-python-cho-nguoi-moi-bat-dau/lap-trinh-python-cho-nguoi-moi-bat-dau_png.png" },
-    { id: 2, title: "UI/UX Design cho Mobile App", progress: 30, lastAccessed: "Hôm qua", lessons: "8/32", image: "https://amela.vn/wp-content/uploads/2023/07/1.-Thiet-ke-UX_UI-la-gi_-.jpg" },
-    { id: 3, title: "Data Science cơ bản", progress: 100, lastAccessed: "3 ngày trước", lessons: "40/40", image: "https://static.topcv.vn/cms/data-scientist-la-gi-topcv-3641bc0a16ef76.jpg" }
-  ];
+  const myCourses = ALL_COURSES.slice(0, 3).map((course) => ({
+    ...course,
+    progress: Math.floor(Math.random() * 100),
+    lastAccessed: "2 giờ trước",
+    lessons: "12/24",
+  }));
 
   const renderContent = () => {
-    if (selectedCourse) {
+    if (isViewingCourseDetail && selectedCourse) {
+      return (
+        <StudentCourseDetail
+          course={selectedCourse}
+          onBack={() => {
+            setIsViewingCourseDetail(false);
+            setSelectedCourse(null);
+          }}
+          onStartLearning={() => {
+            setIsViewingCourseDetail(false);
+          }}
+          onSelectMembership={() => {
+            setSelectedCourse(null);
+            setIsViewingCourseDetail(false);
+            setActiveTab("membership");
+          }}
+        />
+      );
+    }
+
+    if (selectedCourse && !isViewingCourseDetail) {
       return <LessonDetail onBack={() => setSelectedCourse(null)} />;
     }
 
@@ -72,6 +84,44 @@ export const StudentDashboard = ({ onLogout }: StudentDashboardProps) => {
         return <AchievementsTab theme={theme} />;
       case "settings":
         return <SettingsTab />;
+      case "membership":
+        return (
+          <MembershipPlan
+            onBack={() => {
+              setActiveTab("all-courses");
+            }}
+            onSelectPlan={(plan) => {
+              setSelectedPlan(plan);
+              setActiveTab("payment");
+            }}
+          />
+        );
+      case "payment":
+        return (
+          <PaymentPage
+            selectedPlan={selectedPlan}
+            onBack={() => {
+              setActiveTab("membership");
+            }}
+            onPaymentSuccess={() => {
+              setActiveTab("dashboard");
+              setSelectedPlan(null);
+            }}
+          />
+        );
+      case "all-courses":
+        return (
+          <AllCourses
+            searchQuery={searchQuery}
+            onCourseClick={(course) => {
+              setSelectedCourse(course);
+              setIsViewingCourseDetail(true);
+            }}
+            onSelectPlan={() => {
+              setActiveTab("membership");
+            }}
+          />
+        );
       default:
         return null;
     }
@@ -80,35 +130,43 @@ export const StudentDashboard = ({ onLogout }: StudentDashboardProps) => {
   const handleTabChange = (id: string) => {
     setActiveTab(id);
     setSelectedCourse(null);
-    // Nếu đang ở mobile thì tự đóng sidebar khi chọn xong tab
-    if (window.innerWidth <= 1024) {
-      setIsSidebarOpen(false);
-    }
+  };
+
+  const handleLogoClick = () => {
+    setActiveTab("all-courses");
+    setSelectedCourse(null);
   };
 
   return (
-    <div className={`min-h-screen ${theme.bg} flex overflow-hidden`}>
-      {/* 1. CHỈNH TẠI ĐÂY: Truyền thêm setIsSidebarOpen */}
-      <Sidebar
-        isSidebarOpen={isSidebarOpen}
-        setIsSidebarOpen={setIsSidebarOpen}
+    <div className={`min-h-screen ${theme.bg} flex flex-col`}>
+      <TopBar
+        searchQuery={searchQuery}
+        setSearchQuery={(value) => {
+          setSearchQuery(value);
+          if (value.trim() !== "") {
+            setActiveTab("all-courses");
+          }
+        }}
+        menuItems={menuItems}
         activeTab={activeTab}
         setActiveTab={handleTabChange}
-        menuItems={menuItems}
         onLogout={onLogout}
+        onLogoClick={handleLogoClick}
       />
 
       <main className="flex-1 h-screen overflow-y-auto relative scroll-smooth">
-        <TopBar
-          isSidebarOpen={isSidebarOpen}
-          setIsSidebarOpen={setIsSidebarOpen}
-          activeTabLabel={selectedCourse ? "Chi tiết bài học" : menuItems.find(i => i.id === activeTab)?.label || "Dashboard"}
-        />
-
-        <div className="p-8 max-w-7xl mx-auto">
+        <div className={`p-8 ${activeTab === "all-courses" ? "w-full" : "max-w-7xl mx-auto"}`}>
           <AnimatePresence mode="wait">
             <motion.div
-              key={selectedCourse ? "detail" : activeTab}
+              key={
+                isViewingCourseDetail
+                  ? `course-${selectedCourse?.id}`
+                  : selectedCourse
+                  ? "lesson-detail"
+                  : selectedPlan
+                  ? `payment-${selectedPlan?.name}`
+                  : activeTab
+              }
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}

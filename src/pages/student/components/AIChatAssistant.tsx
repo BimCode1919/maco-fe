@@ -32,8 +32,8 @@ export const AIChatAssistant = ({ lessonTitle, isOpen, onClose }: AIChatAssistan
             initial={{ width: 0, opacity: 0 }}
             animate={{ width: 380, opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
-            // THAY ĐỔI Ở ĐÂY: Dùng relative, h-full và border-l
-            className="relative hidden lg:flex flex-col bg-white border-l border-slate-100 h-full shrink-0 z-10 w-[380px]"
+            // THAY ĐỔI Ở ĐÂY: Dùng relative, max-h để khớp với video player
+            className="relative hidden lg:flex flex-col bg-white border-l border-slate-100 max-h-[calc(90vh-80px)] shrink-0 z-10 w-[380px]"
         >
             {/* Header */}
             <div className="p-4 border-b border-slate-50 flex items-center justify-between bg-white shrink-0">
@@ -56,16 +56,14 @@ export const AIChatAssistant = ({ lessonTitle, isOpen, onClose }: AIChatAssistan
 
             {/* Content Area */}
             <div className="flex-1 overflow-y-auto bg-slate-50/30 no-scrollbar flex flex-col">
-                <div className="flex-1 min-h-[20px]" />
-
-                <div className="p-4 space-y-4 pt-1"> {/* Giảm pt-4 xuống pt-2 để sát hơn nữa */}
+                <div className="p-3 space-y-3"> {/* Giảm padding để bớt khoảng trống */}
                     {messages.map((msg, index) => (
                         <div key={index} className={`flex gap-2.5 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
                             <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 shadow-sm 
                     ${msg.role === "ai" ? "bg-white border border-slate-100 text-indigo-600" : "bg-indigo-600 text-white"}`}>
                                 {msg.role === "ai" ? <Bot size={14} /> : <User size={14} />}
                             </div>
-                            <div className={`p-3 rounded-2xl text-[13px] leading-relaxed shadow-sm max-w-[85%] 
+                            <div className={`p-2 rounded-2xl text-[13px] leading-relaxed shadow-sm max-w-[85%] 
                     ${msg.role === "ai" ? "bg-white text-slate-600 rounded-tl-none" : "bg-indigo-500 text-white rounded-tr-none"}`}>
                                 <p dangerouslySetInnerHTML={{ __html: msg.content.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>') }} />
                             </div>

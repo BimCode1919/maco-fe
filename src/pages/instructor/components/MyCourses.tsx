@@ -80,7 +80,8 @@ export const MyCourses = ({ setActiveTab, onViewDetails, onEditCourse }: any) =>
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: idx * 0.05 }}
-                                    className="group hover:bg-indigo-50/30 transition-all duration-300"
+                                    onClick={() => onViewDetails(course.id)}
+                                    className="group hover:bg-indigo-50/30 transition-all duration-300 cursor-pointer"
                                 >
                                     <td className="px-8 py-5">
                                         <div className="flex items-center gap-4">
@@ -111,12 +112,12 @@ export const MyCourses = ({ setActiveTab, onViewDetails, onEditCourse }: any) =>
                                     <td className="px-8 py-5 text-right">
                                         <div className="flex items-center justify-end gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 transform md:translate-x-2 md:group-hover:translate-x-0">
                                             <button
-                                                onClick={() => onViewDetails(course.id)}
+                                                onClick={(e) => { e.stopPropagation(); onViewDetails(course.id); }}
                                                 className="p-2.5 rounded-xl bg-white text-slate-400 hover:text-indigo-600 hover:shadow-md transition-all border border-slate-100"
                                             >
                                                 <Eye size={16} />
                                             </button>
-                                            <button onClick={() => onEditCourse(course.id)} className="p-2.5 rounded-xl bg-white text-slate-400 hover:text-emerald-600 hover:shadow-md transition-all border border-slate-100">
+                                            <button onClick={(e) => { e.stopPropagation(); onEditCourse(course.id); }} className="p-2.5 rounded-xl bg-white text-slate-400 hover:text-emerald-600 hover:shadow-md transition-all border border-slate-100">
                                                 <Edit3 size={16} />
                                             </button>
                                             <button className="p-2.5 rounded-xl bg-white text-slate-400 hover:text-red-600 hover:shadow-md transition-all border border-slate-100">

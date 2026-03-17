@@ -65,7 +65,11 @@ const formatCurrency = (value) => {
     return num.toLocaleString() + "đ";
 };
 
-export const InstructorOverview = () => {
+interface InstructorOverviewProps {
+    onViewCourse?: (id: number) => void;
+}
+
+export const InstructorOverview = ({ onViewCourse }: InstructorOverviewProps) => {
     const totalStudents = courseData.reduce((acc, curr) => acc + curr.students, 0);
     const avgRating = (courseData.reduce((acc, curr) => acc + curr.rating, 0) / courseData.length).toFixed(1);
     const rawRevenue = "21400000"; // Để dạng số để dễ tính toán
@@ -128,7 +132,8 @@ export const InstructorOverview = () => {
                         {courseData.map((course) => (
                             <div
                                 key={course.id}
-                                className="group bg-white p-3 rounded-[20px] border border-slate-100 hover:border-indigo-200 hover:shadow-md transition-all flex items-center gap-4"
+                                onClick={() => onViewCourse?.(course.id)}
+                                className="group bg-white p-3 rounded-[20px] border border-slate-100 hover:border-indigo-200 hover:shadow-md transition-all flex items-center gap-4 cursor-pointer"
                             >
                                 <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-2xl overflow-hidden shrink-0">
                                     <img src={course.image} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />

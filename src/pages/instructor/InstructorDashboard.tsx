@@ -47,7 +47,7 @@ export const InstructorDashboard = ({ onLogout }: InstructorDashboardProps) => {
 
   const renderContent = () => {
     switch (activeTab) {
-      case "dashboard": return <InstructorOverview />;
+      case "dashboard": return <InstructorOverview onViewCourse={(id) => { setSelectedCourseId(id); setActiveTab("courses"); }} />;
       case "courses":
         if (isEditing) {
           return (

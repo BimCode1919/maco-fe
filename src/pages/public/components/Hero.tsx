@@ -6,6 +6,13 @@ interface HeroProps {
 }
 
 export const Hero = ({ setCurrentPage }: HeroProps) => {
+  const scrollToFeatures = () => {
+    const element = document.getElementById('student-feature-section');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <section className="mesh-gradient min-h-screen pt-40 pb-20 px-6 relative overflow-hidden flex items-center">
       <div className="max-w-7xl mx-auto relative z-10 w-full">
@@ -18,25 +25,26 @@ export const Hero = ({ setCurrentPage }: HeroProps) => {
             transition={{ duration: 0.8 }}
             className="lg:col-span-6"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 backdrop-blur-sm border border-brand-slate-50 text-brand-primary text-[13px] font-bold mb-8 shadow-sm">
-              <span className="flex h-2 w-2 rounded-full bg-brand-primary animate-pulse"></span>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/85 backdrop-blur-sm border border-blue-100/50 text-blue-700 text-[13px] font-bold mb-8 shadow-lg drop-shadow-sm">
+              <span className="flex h-2 w-2 rounded-full bg-blue-600 animate-pulse"></span>
               MACO AI: Biến video thành trải nghiệm tương tác
             </div>
 
-            <h1 className="text-[44px] md:text-[56px] lg:text-[64px] font-black tracking-tight text-brand-slate-900 mb-8 leading-[1.1]">
-              Hệ sinh thái học tập <br />
-              <span className="text-brand-primary">Tích hợp Trợ lý AI.</span>
+            <h1 className="text-[44px] md:text-[56px] lg:text-[64px] font-black tracking-tight text-slate-950 mb-8 leading-[1.1] drop-shadow-sm">
+              Không chỉ là học<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-700">mà là hiểu ngay</span>
             </h1>
 
-            <p className="text-[17px] md:text-[19px] text-brand-slate-600 max-w-xl mb-12 font-medium leading-[1.6]">
-              Giải pháp tối ưu cho giảng viên quản lý khóa học video và tự động hóa bộ câu hỏi Quiz bằng AI. Giúp học viên nắm vững kiến thức nhờ khả năng hỏi đáp trực tiếp với nội dung video.
+            <p className="text-[17px] md:text-[19px] text-slate-700 max-w-xl mb-12 font-medium leading-[1.6] drop-shadow-sm">
+              Nền tảng học tập thế hệ mới giúp bạn không còn học lan man, không còn mất động lực.
+              Mọi thứ bạn cần – lộ trình, giải thích, tương tác – đều có ngay trong một trải nghiệm duy nhất
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4">
               <button
-                onClick={() => setCurrentPage("courses")}
-                className="w-full sm:w-auto bg-brand-primary text-white h-14 px-10 rounded-2xl font-bold text-[16px] 
-                           shadow-xl shadow-blue-500/25 hover:bg-blue-700 hover:-translate-y-1 transition-all active:scale-95"
+                onClick={scrollToFeatures}
+                className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 text-white h-14 px-10 rounded-2xl font-bold text-[16px] 
+                           shadow-xl shadow-blue-400/30 hover:from-blue-700 hover:to-blue-800 hover:-translate-y-1 transition-all active:scale-95 drop-shadow-lg"
               >
                 Khám phá tính năng AI
               </button>

@@ -34,14 +34,31 @@ html {
 
 @layer utilities {
   .mesh-gradient {
-    background-color: #ffffff;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #ebf2ff 100%);
+    background-attachment: fixed;
     background-image: 
-        /* Quầng xanh đậm hơn ở góc trên trái để tạo điểm nhấn */
-        radial-gradient(at 0% 0%, rgba(26, 86, 219, 0.08) 0px, transparent 50%),
-        /* Quầng xanh nhạt ở giữa để làm dịu mắt */
-        radial-gradient(at 50% 0%, rgba(56, 189, 248, 0.05) 0px, transparent 40%),
-        /* Một lớp gradient tuyến tính để đảm bảo phía dưới luôn là màu trắng tinh khiết */
-        linear-gradient(to bottom, transparent 60%, #ffffff 100%);
+        /* Quầng xanh đậm ở góc trên trái */
+        radial-gradient(at 15% 5%, rgba(26, 86, 219, 0.12) 0px, transparent 45%),
+        /* Quầng xanh nổi bật ở góc trên phải */
+        radial-gradient(at 85% 15%, rgba(26, 86, 219, 0.1) 0px, transparent 50%),
+        /* Quầng xanh nhạt ở giữa */
+        radial-gradient(at 50% 50%, rgba(26, 86, 219, 0.06) 0px, transparent 55%),
+        /* Quầng xanh rất nhạt ở phần dưới */
+        radial-gradient(at 100% 90%, rgba(26, 86, 219, 0.08) 0px, transparent 50%),
+        /* Quầng xanh siêu nhạt ở phía dưới trái */
+        radial-gradient(at 0% 100%, rgba(26, 86, 219, 0.05) 0px, transparent 40%),
+        /* Lớp gradient chính từ trên xuống dưới */
+        linear-gradient(to bottom, rgba(235, 242, 255, 0.6) 0%, rgba(219, 234, 254, 0.4) 50%, #ffffff 100%);
+    position: relative;
+  }
+
+  .mesh-gradient::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(at 20% 30%, rgba(26, 86, 219, 0.04) 0px, transparent 50%),
+                radial-gradient(at 80% 70%, rgba(26, 86, 219, 0.03) 0px, transparent 50%);
+    pointer-events: none;
   }
 
   .glass {

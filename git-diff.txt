@@ -1,0 +1,364 @@
+﻿diff --git a/src/components/Footer.tsx b/src/components/Footer.tsx
+index e48ae48..d7137f9 100644
+--- a/src/components/Footer.tsx
++++ b/src/components/Footer.tsx
+@@ -4,7 +4,7 @@ import { Logo } from "./Logo";
+ export const Footer = () => {
+   return (
+     <footer className="bg-slate-950 text-white pt-32 pb-16 px-6">
+-      <div className="max-w-7xl mx-auto">
++      <div className="w-full max-w-full">
+         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-16 mb-24">
+           <div className="lg:col-span-1">
+             <div className="mb-8">
+diff --git a/src/pages/student/StudentDashboard.tsx b/src/pages/student/StudentDashboard.tsx
+index c850e98..57433bd 100644
+--- a/src/pages/student/StudentDashboard.tsx
++++ b/src/pages/student/StudentDashboard.tsx
+@@ -1,4 +1,4 @@
+-import { useState, useEffect } from "react";
++import { useState } from "react";
+ import { motion, AnimatePresence } from "framer-motion";
+ import {
+   LayoutDashboard,
+@@ -6,36 +6,24 @@ import {
+   Settings,
+   Trophy
+ } from "lucide-react";
+-import { Sidebar } from "./components/Sidebar";
+ import { TopBar } from "./components/TopBar";
+ import { OverviewTab } from "./components/OverviewTab";
+ import { MyCoursesTab } from "./components/MyCoursesTab";
+ import { AchievementsTab } from "./components/AchievementsTab";
+ import { SettingsTab } from "./components/SettingsTab";
+ import { LessonDetail } from "./components/LessonDetail";
++import { AllCourses, ALL_COURSES } from "./components/AllCourses";
++import { StudentCourseDetail } from "./components/StudentCourseDetail";
+ 
+ interface StudentDashboardProps {
+   onLogout: () => void;
+ }
+ 
+ export const StudentDashboard = ({ onLogout }: StudentDashboardProps) => {
+-  // Mß║Àc ─æß╗ïnh: Mobile ─æ├│ng, Desktop (rß╗Öng > 1024px) th├¼ mß╗ƒ
+-  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 1024);
+   const [activeTab, setActiveTab] = useState("dashboard");
+   const [selectedCourse, setSelectedCourse] = useState<any>(null);
+-
+-  // Tß╗▒ ─æß╗Öng xß╗¡ l├¢ trß║íng th├íi sidebar khi resize tr├¼nh duyß╗çt
+-  useEffect(() => {
+-    const handleResize = () => {
+-      if (window.innerWidth > 1024) {
+-        setIsSidebarOpen(true);
+-      } else {
+-        setIsSidebarOpen(false);
+-      }
+-    };
+-    window.addEventListener("resize", handleResize);
+-    return () => window.removeEventListener("resize", handleResize);
+-  }, []);
++  const [isViewingCourseDetail, setIsViewingCourseDetail] = useState(false);
++  const [searchQuery, setSearchQuery] = useState("");
+ 
+   const theme = {
+     bg: "bg-slate-50",
+@@ -52,14 +40,33 @@ export const StudentDashboard = ({ onLogout }: StudentDashboardProps) => {
+     { id: "settings", icon: Settings, label: "C├ái ─æß║Àt" },
+   ];
+ 
+-  const myCourses = [
+-    { id: 1, title: "Lß║¡p tr├¼nh Python cho AI", progress: 65, lastAccessed: "2 giß╗Ø trã░ß╗øc", lessons: "12/24", image: "https://csc.edu.vn/data/images/tin-tuc/lap-trinh-csdl/kien-thuc-lap-trinh/lap-trinh-python-cho-nguoi-moi-bat-dau/lap-trinh-python-cho-nguoi-moi-bat-dau_png.png" },
+-    { id: 2, title: "UI/UX Design cho Mobile App", progress: 30, lastAccessed: "H├┤m qua", lessons: "8/32", image: "https://amela.vn/wp-content/uploads/2023/07/1.-Thiet-ke-UX_UI-la-gi_-.jpg" },
+-    { id: 3, title: "Data Science cãí bß║ún", progress: 100, lastAccessed: "3 ng├áy trã░ß╗øc", lessons: "40/40", image: "https://static.topcv.vn/cms/data-scientist-la-gi-topcv-3641bc0a16ef76.jpg" }
+-  ];
++  const myCourses = ALL_COURSES.slice(0, 3).map((course) => ({
++    ...course,
++    progress: Math.floor(Math.random() * 100),
++    lastAccessed: "2 giß╗Ø trã░ß╗øc",
++    lessons: "12/24",
++  }));
+ 
+   const renderContent = () => {
+-    if (selectedCourse) {
++    // Hiß╗ân thß╗ï detail kh├│a hß╗ìc
++    if (isViewingCourseDetail && selectedCourse) {
++      return (
++        <StudentCourseDetail
++          course={selectedCourse}
++          onBack={() => {
++            setIsViewingCourseDetail(false);
++            setSelectedCourse(null);
++          }}
++          onStartLearning={() => {
++            setIsViewingCourseDetail(false);
++            // selectedCourse vß║½n giß╗», LessonDetail sß║¢ render
++          }}
++        />
++      );
++    }
++
++    // Hiß╗ân thß╗ï lesson detail
++    if (selectedCourse && !isViewingCourseDetail) {
+       return <LessonDetail onBack={() => setSelectedCourse(null)} />;
+     }
+ 
+@@ -72,6 +79,16 @@ export const StudentDashboard = ({ onLogout }: StudentDashboardProps) => {
+         return <AchievementsTab theme={theme} />;
+       case "settings":
+         return <SettingsTab />;
++      case "all-courses":
++        return (
++          <AllCourses
++            searchQuery={searchQuery}
++            onCourseClick={(course) => {
++              setSelectedCourse(course);
++              setIsViewingCourseDetail(true);
++            }}
++          />
++        );
+       default:
+         return null;
+     }
+@@ -80,35 +97,36 @@ export const StudentDashboard = ({ onLogout }: StudentDashboardProps) => {
+   const handleTabChange = (id: string) => {
+     setActiveTab(id);
+     setSelectedCourse(null);
+-    // Nß║┐u ─æang ß╗ƒ mobile th├¼ tß╗▒ ─æ├│ng sidebar khi chß╗ìn xong tab
+-    if (window.innerWidth <= 1024) {
+-      setIsSidebarOpen(false);
+-    }
++  };
++
++  const handleLogoClick = () => {
++    setActiveTab("all-courses");
++    setSelectedCourse(null);
+   };
+ 
+   return (
+-    <div className={`min-h-screen ${theme.bg} flex overflow-hidden`}>
+-      {/* 1. CHß╗êNH Tß║áI ─É├éY: Truyß╗ün th├¬m setIsSidebarOpen */}
+-      <Sidebar
+-        isSidebarOpen={isSidebarOpen}
+-        setIsSidebarOpen={setIsSidebarOpen}
++    <div className={`min-h-screen ${theme.bg} flex flex-col`}>
++      <TopBar
++        searchQuery={searchQuery}
++        setSearchQuery={setSearchQuery}
++        menuItems={menuItems}
+         activeTab={activeTab}
+         setActiveTab={handleTabChange}
+-        menuItems={menuItems}
+         onLogout={onLogout}
++        onLogoClick={handleLogoClick}
+       />
+ 
+       <main className="flex-1 h-screen overflow-y-auto relative scroll-smooth">
+-        <TopBar
+-          isSidebarOpen={isSidebarOpen}
+-          setIsSidebarOpen={setIsSidebarOpen}
+-          activeTabLabel={selectedCourse ? "Chi tiß║┐t b├ái hß╗ìc" : menuItems.find(i => i.id === activeTab)?.label || "Dashboard"}
+-        />
+-
+-        <div className="p-8 max-w-7xl mx-auto">
++        <div className={`p-8 ${activeTab === "all-courses" ? "w-full" : "max-w-7xl mx-auto"}`}>
+           <AnimatePresence mode="wait">
+             <motion.div
+-              key={selectedCourse ? "detail" : activeTab}
++              key={
++                isViewingCourseDetail
++                  ? `course-${selectedCourse?.id}`
++                  : selectedCourse
++                  ? "lesson-detail"
++                  : activeTab
++              }
+               initial={{ opacity: 0, y: 15 }}
+               animate={{ opacity: 1, y: 0 }}
+               exit={{ opacity: 0, y: -15 }}
+diff --git a/src/pages/student/components/TopBar.tsx b/src/pages/student/components/TopBar.tsx
+index b42b2de..de33771 100644
+--- a/src/pages/student/components/TopBar.tsx
++++ b/src/pages/student/components/TopBar.tsx
+@@ -1,31 +1,56 @@
+ import { useState, useRef, useEffect } from "react";
+ import {
+-  Search,
+   Bell,
++  Search,
+   User,
+-  Menu,
+-  X,
+   CheckCircle2,
+   Clock
+ } from "lucide-react";
+ import { motion, AnimatePresence } from "framer-motion";
++import { Logo } from "../../../components/Logo";
++
++interface MenuItem {
++  id: string;
++  icon: any;
++  label: string;
++}
+ 
+ interface TopBarProps {
+-  isSidebarOpen: boolean;
+-  setIsSidebarOpen: (open: boolean) => void;
+-  activeTabLabel: string;
++  searchQuery: string;
++  setSearchQuery: (value: string) => void;
++  menuItems: MenuItem[];
++  activeTab: string;
++  setActiveTab: (tab: string) => void;
++  onLogout: () => void;
++  onLogoClick: () => void;
+ }
+ 
+-export const TopBar = ({ isSidebarOpen, setIsSidebarOpen, activeTabLabel }: TopBarProps) => {
++export const TopBar = ({
++  searchQuery,
++  setSearchQuery,
++  menuItems,
++  activeTab,
++  setActiveTab,
++  onLogout,
++  onLogoClick
++}: TopBarProps) => {
+   const [showNotifications, setShowNotifications] = useState(false);
++  const [showMenu, setShowMenu] = useState(false);
+   const notificationRef = useRef<HTMLDivElement>(null);
++  const menuRef = useRef<HTMLDivElement>(null);
+ 
+   // ─É├│ng dropdown khi click ra ngo├ái
+   useEffect(() => {
+     const handleClickOutside = (event: MouseEvent) => {
+-      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
++      if (
++        notificationRef.current &&
++        !notificationRef.current.contains(event.target as Node)
++      ) {
+         setShowNotifications(false);
+       }
++      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
++        setShowMenu(false);
++      }
+     };
+     document.addEventListener("mousedown", handleClickOutside);
+     return () => document.removeEventListener("mousedown", handleClickOutside);
+@@ -37,22 +62,26 @@ export const TopBar = ({ isSidebarOpen, setIsSidebarOpen, activeTabLabel }: TopB
+   ];
+ 
+   return (
+-    <header className="sticky top-0 z-100 bg-white/80 backdrop-blur-xl border-b border-slate-100 px-6 py-4 flex items-center justify-between">
++    <header className="sticky top-0 z-100 bg-white/80 backdrop-blur-xl border-b border-slate-100 px-6 py-4 flex items-center justify-between gap-6">
++
++      {/* Left side: Logo */}
++      <button onClick={onLogoClick} className="scale-110 origin-left flex-shrink-0">
++        <Logo />
++      </button>
+ 
+-      {/* Left side */}
+-      <div className="flex items-center gap-5">
+-        <button
+-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+-          className={`p-2.5 rounded-[14px] transition-all duration-300 ${isSidebarOpen ? "bg-indigo-600 text-white shadow-lg shadow-indigo-200" : "bg-slate-50 text-slate-500 hover:bg-slate-100"
+-            }`}
+-        >
+-          {isSidebarOpen ? <X size={20} strokeWidth={2.5} /> : <Menu size={20} strokeWidth={2.5} />}
+-        </button>
+-        <h2 className="text-lg font-black text-slate-900 hidden md:block tracking-tight">{activeTabLabel}</h2>
++      {/* Center: Search */}
++      <div className="relative w-96 flex-shrink-0">
++        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
++        <input
++          value={searchQuery}
++          onChange={(e) => setSearchQuery(e.target.value)}
++          placeholder="T├¼m kh├│a hß╗ìc..."
++          className="w-full pl-11 pr-4 py-2 bg-white border border-slate-200 rounded-2xl focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 outline-none text-sm shadow-sm"
++        />
+       </div>
+ 
+-      {/* Right side */}
+-      <div className="flex items-center gap-4">
++      {/* Right side: Icons */}
++      <div className="flex items-center gap-3 ml-auto">
+         {/* Notifications with Dropdown */}
+         <div className="relative" ref={notificationRef}>
+           <button
+@@ -100,15 +129,69 @@ export const TopBar = ({ isSidebarOpen, setIsSidebarOpen, activeTabLabel }: TopB
+           </AnimatePresence>
+         </div>
+ 
+-        {/* Profile Section */}
+-        <div className="flex items-center gap-3 pl-3 border-l border-slate-100 ml-2">
+-          <div className="text-right hidden sm:block">
+-            <p className="text-[13px] font-black text-slate-900 leading-tight">Hß╗ìc vi├¬n Maco</p>
+-            <p className="text-[10px] font-black text-indigo-600 uppercase tracking-[1px]">ID: 280426</p>
+-          </div>
+-          <div className="w-11 h-11 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-[16px] flex items-center justify-center text-white shadow-lg shadow-indigo-100">
+-            <User size={20} strokeWidth={2.5} />
+-          </div>
++        {/* User Menu */}
++        <div className="relative" ref={menuRef}>
++          <button
++            onClick={() => setShowMenu(!showMenu)}
++            className={`relative p-3 rounded-[16px] transition-all border border-transparent ${showMenu ? "bg-indigo-50 text-indigo-600 border-indigo-100" : "bg-slate-50 text-slate-500 hover:text-indigo-600"
++              }`}
++          >
++            <div className="w-11 h-11 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-[16px] flex items-center justify-center text-white shadow-lg shadow-indigo-100">
++              <User size={20} strokeWidth={2.5} />
++            </div>
++          </button>
++
++          <AnimatePresence>
++            {showMenu && (
++              <motion.div
++                initial={{ opacity: 0, y: 15, scale: 0.95 }}
++                animate={{ opacity: 1, y: 0, scale: 1 }}
++                exit={{ opacity: 0, y: 15, scale: 0.95 }}
++                className="absolute right-0 mt-3 w-72 bg-white rounded-[24px] shadow-2xl shadow-indigo-200/50 border border-slate-100 overflow-hidden"
++              >
++                <div className="p-5 border-b border-slate-50">
++                  <div className="px-4 py-3 bg-slate-50 rounded-2xl flex items-center gap-3">
++                    <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600 font-black text-xs">
++                      SV
++                    </div>
++                    <div className="flex flex-col">
++                      <span className="text-[13px] font-black text-slate-900 leading-none mb-1">Hß╗ìc vi├¬n Maco</span>
++                      <span className="text-[11px] font-bold text-slate-400">G├│i Pro Account</span>
++                    </div>
++                  </div>
++                </div>
++                <nav className="max-h-[260px] overflow-y-auto">
++                  {menuItems.map((item) => {
++                    const isActive = activeTab === item.id;
++                    return (
++                      <button
++                        key={item.id}
++                        onClick={() => {
++                          setActiveTab(item.id);
++                          setShowMenu(false);
++                        }}
++                        className={`w-full flex items-center gap-3 px-5 py-4 transition-all text-left ${isActive ? "bg-indigo-600 text-white" : "text-slate-500 hover:bg-slate-50 hover:text-indigo-600"}`}
++                      >
++                        <div className={`${isActive ? "text-white" : "text-slate-500"}`}>
++                          <item.icon size={18} strokeWidth={isActive ? 2.5 : 2} />
++                        </div>
++                        <span className={`text-[15px] ${isActive ? "font-black" : "font-bold"}`}>{item.label}</span>
++                      </button>
++                    );
++                  })}
++                </nav>
++                <button
++                  onClick={() => {
++                    setShowMenu(false);
++                    onLogout();
++                  }}
++                  className="w-full flex items-center justify-center gap-2 px-5 py-4 text-[15px] font-black text-red-500 hover:bg-red-50 transition-all"
++                >
++                  <span>─É─âng xuß║Ñt</span>
++                </button>
++              </motion.div>
++            )}
++          </AnimatePresence>
+         </div>
+       </div>
+     </header>
