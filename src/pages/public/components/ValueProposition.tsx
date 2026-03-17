@@ -6,7 +6,7 @@ const values = [
     {
         icon: <MessageSquare size={30} />,
         title: "Hỏi ngay khi học, đáp tức thì",
-        desc: "Mọi thắc mắc được giải đáp ngay trong lúc bạn xem video.",
+        desc: "Mọi thắc mắc được giải đáp ngay trong lúc bạn xem video",
         // Màu SẮC MỚI: Đơn sắc đậm
         bgColor: "bg-[#1A56DB]", // Blue
         glowColor: "rgba(26, 86, 219, 0.4)", // rgba of #1A56DB
@@ -15,7 +15,7 @@ const values = [
     {
         icon: <Zap size={30} />,
         title: "Hiểu sâu kiến thức trong vài giây",
-        desc: "AI tóm tắt và giải thích những khái niệm khó một cách bình dân.",
+        desc: "AI tóm tắt và giải thích những khái niệm khó một cách dễ hiểu",
         bgColor: "bg-[#FBBF24]", // Amber
         glowColor: "rgba(251, 191, 36, 0.4)", // rgba of #FBBF24
         floatDelay: 0.2,
@@ -23,7 +23,7 @@ const values = [
     {
         icon: <Play size={30} />,
         title: "Học liên tục, không bị ngắt quãng",
-        desc: "Tập trung hoàn toàn vào bài giảng, không lo bị kẹt lại giữa chừng.",
+        desc: "Tập trung hoàn toàn vào bài giảng, không lo bị kẹt lại giữa chừng",
         bgColor: "bg-[#7C3AED]", // Violet
         glowColor: "rgba(124, 58, 237, 0.4)", // rgba of #7C3AED
         floatDelay: 0.1,
@@ -31,7 +31,7 @@ const values = [
     {
         icon: <Target size={30} />,
         title: "Gợi ý bài tập đúng chỗ hổng",
-        desc: "Hệ thống tự nhận diện phần bạn chưa hiểu để củng cố thêm.",
+        desc: "Hệ thống tự nhận diện phần bạn chưa hiểu để củng cố thêm",
         bgColor: "bg-[#10B981]", // Emerald
         glowColor: "rgba(16, 185, 129, 0.4)", // rgba of #10B981
         floatDelay: 0.3,
