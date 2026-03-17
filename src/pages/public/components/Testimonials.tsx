@@ -11,7 +11,7 @@ export const Testimonials = () => {
     <section className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-8">
         <h2 className="text-3xl font-black text-center text-slate-900 mb-16">
-          Học viên nói gì về các <span className="text-indigo-600">Mentor</span>
+          Học viên đã <span className="text-indigo-600">trải nghiệm</span> và <span className="text-indigo-600"> chia sẻ</span>
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {reviews.map((rev, i) => (

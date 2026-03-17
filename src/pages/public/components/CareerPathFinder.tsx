@@ -31,8 +31,8 @@ export const CareerPathFinder = ({ openAuth }: CareerPathFinderProps) => {
                     <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 md:gap-8">
                         {/* Mobile: text-3xl | Desktop: text-5xl */}
                         <h2 className="text-3xl md:text-5xl font-black text-slate-900 leading-[1.2] md:leading-[1.1] max-w-3xl">
-                            Khám phá <span className="text-[#1A56DB]">Lộ trình</span> học tập<br className="hidden md:block" />
-                            cùng đội ngũ chuyên gia
+                            Từng bước tiến đều có <br/><span className="text-[#1A56DB]">định hướng </span>
+                            rõ ràng
                         </h2>
                         <p className="text-slate-500 font-bold text-sm md:text-lg max-w-sm border-l-4 border-blue-100 pl-4 md:pl-6 py-1 md:py-2">
                             Mỗi giảng viên mang đến góc nhìn thực tế cho hành trình của bạn.
@@ -66,7 +66,7 @@ export const CareerPathFinder = ({ openAuth }: CareerPathFinderProps) => {
                                 </h3>
 
                                 <p className="text-slate-500 font-bold text-xs md:text-sm mb-6 md:mb-8 leading-relaxed">
-                                    Tìm hiểu kỹ năng cốt lõi và kinh nghiệm thực chiến từ chuyên gia {path.label}.
+                                    {path.label}.
                                 </p>
 
                                 <div className="pt-4 md:pt-6 border-t border-slate-50 flex items-center justify-between">

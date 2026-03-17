@@ -34,7 +34,6 @@ export const InstructorsPage = ({ setCurrentPage, openAuth }: InstructorsPagePro
       />
 
       <InstructorHero onExplore={scrollToGrid} />
-      <CareerPathFinder openAuth={openAuth} />
 
       {/* Truyền setSelectedIns vào onSelect */}
       <EliteExperts onSelect={setSelectedIns} />
@@ -43,10 +42,11 @@ export const InstructorsPage = ({ setCurrentPage, openAuth }: InstructorsPagePro
       <div id="expert-grid">
         <ExpertNetworkGrid onSelect={setSelectedIns} />
       </div>
+      <CareerPathFinder openAuth={openAuth} />
 
       <Testimonials />
 
-      <InstructorCTA openAuth={() => openAuth("register-select")} />
+      {/* <InstructorCTA openAuth={() => openAuth("register-select")} /> */}
 
       {/* HIỂN THỊ MODAL KHI CÓ GIẢNG VIÊN ĐƯỢC CHỌN */}
       <AnimatePresence>

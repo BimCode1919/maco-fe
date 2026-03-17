@@ -1,6 +1,6 @@
 import { Logo } from "./Logo";
 import { useEffect, useState } from "react";
-import { Menu, X } from "lucide-react"; // Import icon
+import { Menu, X } from "lucide-react";
 
 interface NavProps {
   setCurrentPage: (page: string) => void;
@@ -10,12 +10,14 @@ interface NavProps {
 
 export const Nav = ({ setCurrentPage, currentPage, openAuth }: NavProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // State cho mobile menu
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  // 1. Thêm "Liên hệ" vào danh sách (dùng id khác biệt để bắt sự kiện)
   const menuItems = [
     { name: "Trang chủ", id: "home" },
     { name: "Khóa học", id: "courses" },
-    { name: "Giảng viên", id: "instructors" }
+    { name: "Giảng viên", id: "instructors" },
+    { name: "Liên hệ", id: "contact-scroll" } // ID đặc biệt để cuộn
   ];
 
   useEffect(() => {
@@ -24,10 +26,23 @@ export const Nav = ({ setCurrentPage, currentPage, openAuth }: NavProps) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Đóng menu khi chọn trang
-  const handleNavClick = (id: string) => {
-    setCurrentPage(id);
+  // 2. Hàm xử lý cuộn xuống Footer
+  const scrollToFooter = () => {
+    const footer = document.querySelector("footer"); // Hoặc dùng ID: document.getElementById('footer')
+    if (footer) {
+      footer.scrollIntoView({ behavior: "smooth" });
+    }
     setIsMenuOpen(false);
+  };
+
+  const handleNavClick = (id: string) => {
+    // 3. Kiểm tra nếu là nút liên hệ thì scroll, ngược lại thì chuyển page
+    if (id === "contact-scroll") {
+      scrollToFooter();
+    } else {
+      setCurrentPage(id);
+      setIsMenuOpen(false);
+    }
   };
 
   return (
@@ -40,7 +55,7 @@ export const Nav = ({ setCurrentPage, currentPage, openAuth }: NavProps) => {
             <Logo />
           </div>
 
-          {/* Menu Desktop - Giữ nguyên */}
+          {/* Menu Desktop */}
           <div className="hidden lg:flex items-center gap-10">
             {menuItems.map((item) => (
               <button
@@ -59,7 +74,6 @@ export const Nav = ({ setCurrentPage, currentPage, openAuth }: NavProps) => {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Nút Bắt đầu ngay - Ẩn bớt trên mobile cực nhỏ nếu cần */}
             <button
               onClick={() => openAuth("register-select")}
               className="hidden sm:block bg-brand-primary text-white text-[14px] md:text-[15px] font-bold h-10 md:h-11 px-5 md:px-7 rounded-full shadow-lg shadow-blue-500/20"
@@ -67,7 +81,6 @@ export const Nav = ({ setCurrentPage, currentPage, openAuth }: NavProps) => {
               Bắt đầu ngay
             </button>
 
-            {/* Hamburger Button - Chỉ hiện trên Mobile/Tablet */}
             <button
               className="lg:hidden p-2 text-slate-900"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -78,7 +91,7 @@ export const Nav = ({ setCurrentPage, currentPage, openAuth }: NavProps) => {
         </div>
 
         {/* Mobile Menu Overlay */}
-        <div className={`lg:hidden fixed inset-x-0 top-[70px] bg-white border-t border-slate-100 transition-all duration-300 shadow-xl overflow-hidden ${isMenuOpen ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
+        <div className={`lg:hidden fixed inset-x-0 top-[70px] bg-white border-t border-slate-100 transition-all duration-300 shadow-xl overflow-hidden ${isMenuOpen ? "max-h-[450px] opacity-100" : "max-h-0 opacity-0"
           }`}>
           <div className="flex flex-col p-6 gap-4">
             {menuItems.map((item) => (
@@ -101,7 +114,6 @@ export const Nav = ({ setCurrentPage, currentPage, openAuth }: NavProps) => {
         </div>
       </nav>
 
-      {/* Backdrop để đóng menu khi bấm ra ngoài */}
       {isMenuOpen && (
         <div
           className="lg:hidden fixed inset-0 bg-black/20 z-[90] backdrop-blur-sm"
