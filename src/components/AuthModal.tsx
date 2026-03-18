@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Mail, Lock, User, GraduationCap, ChevronRight, Phone, Briefcase, Chrome } from "lucide-react";
+import { div } from "motion/react-client";
 import React, { useState } from "react";
 
 type AuthMode = "login" | "register-select" | "register-student" | null;
@@ -111,7 +112,7 @@ export const AuthModal = ({ mode, onClose, setMode, onSuccess, onNavigate }: Aut
                       <form onSubmit={handleLoginSubmit} className="space-y-3">
                         <InputField
                           icon={Mail}
-                          placeholder="Email (vd: student@maco.com)"
+                          placeholder="Email đăng nhập"
                           type="email"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
@@ -132,6 +133,27 @@ export const AuthModal = ({ mode, onClose, setMode, onSuccess, onNavigate }: Aut
                           Đăng nhập
                         </button>
                       </form>
+
+                      {/* --- PHẦN NOTE TÀI KHOẢN DEMO THÊM VÀO ĐÂY --- */}
+                      <div className="mt-6 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                        <p className="text-[11px] font-black text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse" />
+                          Tài khoản Demo (Mật khẩu: 123)
+                        </p>
+                        <div className="grid grid-cols-1 gap-1">
+                          {['student@gmail.com', 'instructor@gmail.com', 'admin@gmail.com'].map((demoEmail) => (
+                            <button
+                              key={demoEmail}
+                              type="button"
+                              onClick={() => setEmail(demoEmail)}
+                              className="text-left text-[12px] font-bold text-slate-600 hover:text-indigo-600 transition-colors py-0.5"
+                            >
+                              • {demoEmail}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      {/* ------------------------------------------- */}
 
                       <p className="text-center text-[13px] font-bold text-slate-500">
                         Chưa có tài khoản? <button onClick={() => setMode("register-select")} className="text-indigo-600 hover:underline">Đăng ký ngay</button>
