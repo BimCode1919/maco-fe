@@ -40,7 +40,7 @@ const values = [
 
 export const ValueProposition = () => {
     return (
-        <section className="py-28 bg-white relative overflow-hidden">
+        <section className="py-0 bg-white relative overflow-hidden">
             {/* Background Decor giữ nguyên */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:32px_32px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30" />
 
