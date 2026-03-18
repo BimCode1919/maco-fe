@@ -22,7 +22,7 @@ const ALL_COURSES = [
   { id: 14, title: "Lập trình Game với Unity 3D", instructor: "Chu Ngọc Nam", rating: 4.7, reviews: 670, duration: "55 giờ", students: 4800, price: "1.700.000đ", category: "Game Dev", level: "Trung cấp", image: "https://cellphones.com.vn/sforum/wp-content/uploads/2023/03/unity-la-gi-1.jpg" }
 ];
 
-const priceOptions = ["Mọi mức giá", "Miễn phí", "Có phí"];
+const priceOptions = ["Mức giá", "Miễn phí", "Có phí"];
 const ratingOptions = [0, 4.5, 4.8];
 const sortOptions = ["Mới nhất", "Học viên (Nhiều nhất)", "Đánh giá cao nhất"];
 const priceRangeOptions = [

@@ -45,7 +45,7 @@ interface AllCoursesProps {
 
 const categories = ["Tất cả", "AI & Data Science", "Web Development", "Backend", "Frontend", "DevOps", "Cybersecurity", "Design", "Mobile App"];
 const priceRanges = [
-  { label: "Mọi mức giá", min: 0, max: Infinity },
+  { label: "Mức giá", min: 0, max: Infinity },
   { label: "Miễn phí", min: 0, max: 0 },
   { label: "Dưới 1.500.000đ", min: 0, max: 1500000 },
   { label: "1.500.000đ - 2.500.000đ", min: 1500000, max: 2500000 },
@@ -67,7 +67,7 @@ export const AllCourses = ({ searchQuery, onCourseClick, onSelectPlan }: AllCour
   const query = deferredSearchQuery.toLowerCase().trim();
   const isSearching = query.length > 0;
 
-  const isFiltering = activeCategory !== "Tất cả" || selectedRating !== 0 || selectedPriceRange.label !== "Mọi mức giá";
+  const isFiltering = activeCategory !== "Tất cả" || selectedRating !== 0 || selectedPriceRange.label !== "Mức giá";
   const showFiltered = isSearching || isFiltering;
 
   const [contentVisible, setContentVisible] = useState(true);
