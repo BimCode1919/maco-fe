@@ -11,6 +11,7 @@ import { ExpertNetworkGrid } from "./components/ExpertNetworkGrid";
 import { InstructorCTA } from "./components/InstructorCTA";
 import { Testimonials } from "./components/Testimonials";
 import { InstructorModal } from "./components/InstructorModal"; // Đảm bảo bạn đã tạo file này
+import { InstructorFeature } from "./components/InstructorFeature";
 
 interface InstructorsPageProps {
   setCurrentPage: (page: string) => void;
@@ -45,8 +46,9 @@ export const InstructorsPage = ({ setCurrentPage, openAuth }: InstructorsPagePro
       <CareerPathFinder openAuth={openAuth} />
 
       <Testimonials />
+      <InstructorFeature />
 
-      {/* <InstructorCTA openAuth={() => openAuth("register-select")} /> */}
+      <InstructorCTA openAuth={() => openAuth("register-select")} />
 
       {/* HIỂN THỊ MODAL KHI CÓ GIẢNG VIÊN ĐƯỢC CHỌN */}
       <AnimatePresence>

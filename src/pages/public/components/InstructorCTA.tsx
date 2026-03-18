@@ -49,17 +49,16 @@ export const InstructorCTA = ({ openAuth }: InstructorCTAProps) => {
           >
             <div className="flex items-center gap-2 text-indigo-400 font-bold text-xs uppercase tracking-[0.2em] mb-6">
               <ShieldCheck size={16} />
-              Dành cho Đối tác Giáo dục
+              Dành cho Giảng viên
             </div>
 
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-[1.15] tracking-tight">
-              Tối ưu vận hành <br />
-              <span className="text-indigo-400 font-black">Nâng tầm bài giảng.</span>
+              Tạo câu hỏi từ video <br />
+              <span className="text-indigo-400 font-black">và quản lý nội dung dễ dàng hơn</span>
             </h2>
 
             <p className="text-slate-400 text-lg mb-10 max-w-lg font-medium leading-relaxed">
-              MACO không chỉ là nền tảng trình chiếu. Chúng tôi cung cấp công cụ AI giúp giảng viên
-              giảm bớt khối lượng công việc thủ công và tập trung vào việc truyền thụ tri thức thực chất.
+              MACO hỗ trợ giảng viên tạo câu hỏi từ nội dung video và tổ chức bài giảng một cách rõ ràng, giúp giảm bớt các thao tác thủ công trong quá trình xây dựng nội dung
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
@@ -69,7 +68,7 @@ export const InstructorCTA = ({ openAuth }: InstructorCTAProps) => {
                 onClick={() => openAuth("register-instructor")}
                 className="bg-white text-slate-900 h-16 px-10 rounded-2xl font-black text-md hover:bg-indigo-50 transition-all flex items-center justify-center gap-3 uppercase tracking-tighter group"
               >
-                Trở thành đối tác
+                Trở thành giảng viên
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
               </motion.button>
             </div>
@@ -87,13 +86,13 @@ export const InstructorCTA = ({ openAuth }: InstructorCTAProps) => {
               {[
                 {
                   icon: <Layout className="text-indigo-400" size={20} />,
-                  title: "Không gian giảng dạy chuyên nghiệp",
-                  desc: "Lưu trữ video bài giảng tập trung, bảo mật và dễ dàng quản lý theo khóa học."
+                  title: "Quản lý nội dung bài giảng",
+                  desc: "Lưu trữ và tổ chức video bài giảng theo từng khóa học, giúp bạn dễ dàng theo dõi và sử dụng lại nội dung"
                 },
                 {
                   icon: <PenTool className="text-indigo-400" size={20} />,
-                  title: "Tự động hóa bài kiểm tra",
-                  desc: "Hệ thống AI hỗ trợ khởi tạo bộ câu hỏi Quiz đánh giá ngay từ nội dung bài giảng của bạn."
+                  title: "Tạo quiz từ video với AI",
+                  desc: "AI hỗ trợ tạo câu hỏi trắc nghiệm dựa trên nội dung video, giúp bạn xây dựng bài kiểm tra nhanh chóng và rõ ràng"
                 }
               ].map((item, idx) => (
                 <motion.div
@@ -130,7 +129,7 @@ export const InstructorCTA = ({ openAuth }: InstructorCTAProps) => {
                   <span className="absolute -top-1 -right-1 w-2 h-2 bg-indigo-500 rounded-full animate-ping" />
                 </div>
                 <span className="text-[11px] font-medium tracking-tight">
-                  Giao diện quản trị bài giảng đang được hoàn thiện và cập nhật mỗi tuần.
+                  Giao diện quản lý nội dung và câu hỏi đang được cải thiện liên tục
                 </span>
               </motion.div>
             </motion.div>

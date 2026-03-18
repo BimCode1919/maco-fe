@@ -8,25 +8,20 @@ interface InstructorHeroProps {
 export const InstructorHero = ({ onExplore }: InstructorHeroProps) => {
     return (
         <section className="mesh-gradient min-h-[90vh] pt-32 pb-20 md:pt-40 md:pb-32 px-6 relative overflow-hidden flex items-center">
-            
+
             {/* Background Decor */}
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-400/10 rounded-full blur-[120px] -mr-48 -mt-48 animate-pulse" />
 
             <div className="max-w-7xl mx-auto relative z-10 w-full">
                 <div className="grid lg:grid-cols-12 gap-16 items-center">
-                    
+
                     {/* CỘT TRÁI: NỘI DUNG */}
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0, x: -30 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.8 }}
                         className="lg:col-span-6"
                     >
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 backdrop-blur-md border border-blue-100/50 text-blue-700 text-[13px] font-bold mb-8 shadow-lg">
-                            <span className="flex h-2 w-2 rounded-full bg-[#1A56DB] animate-pulse"></span>
-                            Đội ngũ chuyên gia từ doanh nghiệp
-                        </div>
-
                         <h1 className="text-[44px] md:text-[56px] lg:text-[64px] font-black tracking-tight text-slate-950 mb-8 leading-[1.1]">
                             Học trực tiếp từ  <br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1A56DB] to-blue-700">
@@ -51,7 +46,7 @@ export const InstructorHero = ({ onExplore }: InstructorHeroProps) => {
 
                     {/* CỘT PHẢI: XỬ LÝ ĐÈ CARD BẰNG CÁCH TẠO KHUNG WRAPPER RỘNG HƠN */}
                     <div className="lg:col-span-6 relative flex justify-center items-center min-h-[450px]">
-                        
+
                         {/* Card chính - Đặt ở trung tâm, làm mốc cho các card khác */}
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
@@ -77,11 +72,11 @@ export const InstructorHero = ({ onExplore }: InstructorHeroProps) => {
                                     <span className="text-blue-600">95%</span>
                                 </div>
                                 <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                                    <motion.div 
+                                    <motion.div
                                         initial={{ width: 0 }}
                                         animate={{ width: "95%" }}
                                         transition={{ duration: 1.5, delay: 0.5 }}
-                                        className="h-full bg-blue-600" 
+                                        className="h-full bg-blue-600"
                                     />
                                 </div>
                             </div>

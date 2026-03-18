@@ -50,7 +50,7 @@ export const StudentFeature = () => {
                             <MessageSquareText size={16} />
                             <span>Hỏi đáp trực tiếp</span>
                         </div>
-                        <h3 className="text-3xl md:text-4xl font-black text-slate-900">Dành cho Học viên</h3>
+                        <h3 className="text-3xl md:text-4xl font-black text-slate-900">Đối với Học viên</h3>
                         <p className="text-slate-600 text-lg leading-relaxed font-medium">
                             Đặt câu hỏi ngay tại bất kỳ thời điểm nào trong video và nhận giải thích tức thì từ AI. Mọi thắc mắc được xử lý ngay lập tức.
                         </p>
