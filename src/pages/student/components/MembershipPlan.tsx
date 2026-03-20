@@ -28,7 +28,7 @@ const pricingTiers = [
   },
   {
     name: "Gói Pro",
-    price: "499.000đ/tháng",
+    price: "157.000đ/tháng",
     description: "Cho những người muốn học chuyên sâu",
     icon: "⚡",
     features: [
