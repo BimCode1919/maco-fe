@@ -54,7 +54,7 @@ const priceRanges = [
 
 const pricingTiers = [
   { name: "Gói Basic", price: "Miễn phí", features: ["Truy cập khóa học cơ bản", "Cộng đồng học tập", "Chứng chỉ tham gia"], color: "bg-slate-50" },
-  { name: "Gói Pro", price: "499.000đ/tháng", features: ["Tất cả khóa học cao cấp", "Hỗ trợ AI 24/7", "Tư vấn cá nhân hóa", "Chứng chỉ chuyên nghiệp"], color: "bg-indigo-50", popular: true },
+  { name: "Gói Pro", price: "157.000đ/tháng", features: ["Tất cả khóa học cao cấp", "Hỗ trợ AI 24/7", "Tư vấn cá nhân hóa", "Chứng chỉ chuyên nghiệp"], color: "bg-indigo-50", popular: true },
   { name: "Gói Enterprise", price: "Liên hệ", features: ["Custom learning path", "Mentor riêng", "Hỗ trợ doanh nghiệp", "Giấy phép doanh nghiệp"], color: "bg-slate-900 text-white" }
 ];
 
